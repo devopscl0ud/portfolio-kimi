@@ -147,6 +147,22 @@ kubectl get svc -n portfolio
 - Cloud cost estimator
 - Terminal troubleshooting challenge
 
+### **AI Features**
+- AI-powered `Project Summary` generator (uses Google Generative AI; click "AI Summary" on project cards)
+- AI-powered `Bio Suggestion` for quick rewording of the About page
+> Note: To enable live AI responses, add a `GOOGLE_AI_API_KEY` to `config.json` or a local `./.env` file (see `config.example.json` and `.env.example`). Without a key, the UI will fall back to canned responses.
+
+### Testing the AI & Terminal features (Quick)
+1. Start the dev server: `npm run dev` and open `http://localhost:3000/projects.html`.
+2. On a project card, click "AI Summary" — an AI Modal should open. If a key is configured you'll get an AI response; otherwise canned text appears. Use "Copy" or "Insert into project" to test actions.
+3. Visit `dashboard.html` and interact with the terminal. Type `help`, use the quick buttons, press <kbd>Tab</kbd> for completion, navigate previous commands with <kbd>Up</kbd>/<kbd>Down</kbd>, and use the **Copy Output** button to copy terminal contents.
+4. Visit `projects.html` to use **AI Summary** (generates bullets) and **Ask AI** (ask project-specific questions). On the About page use **AI Suggest Bio** and **AI Resume Bullets** to generate rewritten bios and resume bullets. Use the **AI Hero Blurb** button on the homepage to generate polished hero text.
+5. To enable live responses, add `GOOGLE_AI_API_KEY` to `config.json` or `./.env` and reload the page.
+
+### **Terminal Improvements**
+- Interactive terminal with command history, tab-completion, and quick command buttons
+- Outputs use `mock-data.json` for realistic command responses
+
 ## 📊 **Key Metrics**
 
 - **2.3M+ Active Users** across all platforms

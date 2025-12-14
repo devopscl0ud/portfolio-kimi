@@ -11,6 +11,7 @@ class DevOpsPortfolio {
         this.terminalHistory = [];
         this.mockData = null;
         this.xtermTerminal = null;
+        this.xtermBuffer = '';
         this.chatbotActive = false;
         this.terminalCommands = {
             'kubectl get nodes': this.getKubectlNodes,
@@ -39,21 +40,296 @@ class DevOpsPortfolio {
         // Load runtime config (optional config.json)
         this.loadRuntimeConfig();
         
-        this.setupScrollAnimations();
-        this.setupMetricCounters();
-        this.setupTerminal();
-        this.setupHoverEffects();
-        this.setupNavigation();
-        this.setupMarquee();
-        this.setupKubernetesVisualization();
-        this.setupChatbot();
-        this.setupXTerminal();
-        this.setup3DCube();
+        // Initialize features individually with error isolation so one failure doesn't break the page
+        const safe = (fn) => { try { fn.call(this); } catch (e) { console.error('Init error:', e); } };
+        safe(this.setupScrollAnimations);
+        safe(this.setupMetricCounters);
+        safe(this.setupTerminal);
+        safe(this.setupHoverEffects);
+        safe(this.setupNavigation);
+        safe(this.setupMarquee);
+        safe(this.setupKubernetesVisualization);
+        safe(this.setupChatbot);
+        safe(this.setupXTerminal);
+        safe(this.setupAIFeatures);
+        safe(this.installErrorPanel);
+        safe(this.setup3DCube);
         
         // Initialize GSAP
         if (typeof gsap !== 'undefined') {
             gsap.registerPlugin(ScrollTrigger);
         }
+    }
+
+    // Simple on-page error panel to surface JS errors on the homepage for debugging
+    installErrorPanel() {
+        try {
+            if (document.getElementById('error-panel')) return;
+            const panel = document.createElement('div');
+            panel.id = 'error-panel';
+            panel.style.position = 'fixed';
+            panel.style.left = '1rem';
+            panel.style.bottom = '1rem';
+            panel.style.zIndex = 99999;
+            panel.style.maxWidth = 'min(40vw, 420px)';
+            panel.style.maxHeight = '40vh';
+            panel.style.overflow = 'auto';
+            panel.style.background = 'rgba(10,10,10,0.9)';
+            panel.style.color = '#F8F8FF';
+            panel.style.border = '1px solid rgba(255,0,0,0.3)';
+            panel.style.padding = '8px';
+            panel.style.fontSize = '12px';
+            panel.style.fontFamily = 'JetBrains Mono, monospace';
+            panel.innerHTML = '<strong style="color:#FFA500">Client Errors</strong><div id="error-list" style="margin-top:6px"></div><div style="text-align:right;margin-top:6px"><button id="error-clear" style="background:#333;padding:4px 8px;border-radius:4px;border:1px solid #444;color:#fff">Clear</button></div>';
+            document.body.appendChild(panel);
+
+            const list = document.getElementById('error-list');
+            const add = (msg) => {
+                const d = document.createElement('div');
+                d.style.marginBottom = '6px';
+                d.textContent = `${new Date().toLocaleTimeString()} — ${msg}`;
+                list.prepend(d);
+                // keep max 20
+                while (list.children.length > 20) list.removeChild(list.lastChild);
+            };
+
+            window.addEventListener('error', (e) => {
+                add(e.message + ' @ ' + (e.filename || '') + ':' + (e.lineno || '?'));
+                console.error('Captured error:', e);
+            });
+
+            window.addEventListener('unhandledrejection', (e) => {
+                add('Promise rejection: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
+                console.error('Unhandled rejection:', e);
+            });
+
+            document.getElementById('error-clear').addEventListener('click', () => list.innerHTML = '');
+        } catch (e) {
+            console.warn('Failed to install error panel', e);
+        }
+    }
+
+    // AI features: project summaries and bio rewriting
+    setupAIFeatures() {
+        // Delegate clicks for project summary buttons
+        document.body.addEventListener('click', async (e) => {
+            const btn = e.target.closest && e.target.closest('.ai-summary-btn');
+            if (btn) {
+                const projectId = btn.getAttribute('data-project');
+                this.handleProjectAISummary(projectId, btn);
+            }
+
+            const bioBtn = e.target.closest && e.target.closest('#ai-bio-btn');
+            if (bioBtn) {
+                this.handleBioRewrite(bioBtn);
+            }
+            const resumeBtn = e.target.closest && e.target.closest('#ai-resume-btn');
+            if (resumeBtn) {
+                this.handleResumeBullets(resumeBtn);
+            }
+
+            const askBtn = e.target.closest && e.target.closest('.ai-ask-btn');
+            if (askBtn) {
+                const projectId = askBtn.getAttribute('data-project');
+                this.handleProjectAIAsk(projectId);
+            }
+
+            const heroBtn = e.target.closest && e.target.closest('#ai-hero-btn');
+            if (heroBtn) {
+                this.handleHeroBlurb();
+            }
+        });
+    }
+
+    async handleProjectAISummary(projectId, triggerBtn) {
+        const projectEl = document.getElementById(projectId);
+        if (!projectEl) return;
+
+        const title = projectEl.querySelector('h3')?.innerText || projectId;
+        const desc = projectEl.querySelector('p')?.innerText || '';
+        const techs = Array.from(projectEl.querySelectorAll('.tech-tag')).map(t => t.innerText).join(', ');
+
+        const prompt = `Summarize the following project for a professional portfolio in 3 concise bullet points, include impact metrics and technologies used. Project: ${title}. Description: ${desc}. Technologies: ${techs}`;
+
+        const modal = this.createModal(`AI Summary • ${title}`, '<div class="p-4 text-sm text-gray-300">Generating summary...</div>');
+        try {
+            const ai = await getAIResponse(prompt);
+            modal.setContent(`<div class="p-4 text-sm text-gray-300 whitespace-pre-wrap">${escapeHtml(ai)}</div><div class="mt-3 flex gap-2"><button id=\"ai-copy-btn\" class=\"bg-cyber-blue px-3 py-1 rounded text-deep-space text-sm\">Copy</button><button id=\"ai-insert-btn\" class=\"bg-matrix-green px-3 py-1 rounded text-deep-space text-sm\">Insert into project</button></div>`);
+
+            document.getElementById('ai-copy-btn').addEventListener('click', () => {
+                navigator.clipboard.writeText(ai).then(() => {
+                    this.toast('Copied to clipboard');
+                });
+            });
+
+            document.getElementById('ai-insert-btn').addEventListener('click', () => {
+                const container = projectEl.querySelector('.interactive-demo');
+                if (container) {
+                    const summaryNode = document.createElement('div');
+                    summaryNode.className = 'glassmorphism p-4 rounded-lg mt-4';
+                    summaryNode.innerHTML = `<h5 class=\"font-semibold text-cyber-blue mb-2\">AI Summary</h5><div class=\"text-gray-300 text-sm\">${escapeHtml(ai)}</div>`;
+                    container.prepend(summaryNode);
+                    this.toast('Summary inserted');
+                }
+            });
+        } catch (err) {
+            modal.setContent(`<div class="p-4 text-sm text-yellow-400">AI request failed. Try again later.</div>`);
+            console.warn('AI summary failed:', err);
+        }
+    }
+
+    async handleBioRewrite(triggerBtn) {
+        const bioEl = document.querySelector('.career-pivot p') || document.querySelector('#about p');
+        if (!bioEl) return;
+        const original = bioEl.innerText.trim();
+        const prompt = `Rewrite the following bio into a crisp 1-2 sentence professional summary suitable for the top of a portfolio page: ${original}`;
+
+        const modal = this.createModal('AI Bio Suggestion', '<div class="p-4 text-sm text-gray-300">Generating suggestion...</div>');
+        try {
+            const ai = await getAIResponse(prompt);
+            modal.setContent(`<div class="p-4 text-sm text-gray-300 whitespace-pre-wrap">${escapeHtml(ai)}</div><div class="mt-3 flex gap-2"><button id=\"ai-bio-copy-btn\" class=\"bg-cyber-blue px-3 py-1 rounded text-deep-space text-sm\">Copy</button><button id=\"ai-bio-apply-btn\" class=\"bg-matrix-green px-3 py-1 rounded text-deep-space text-sm\">Apply to page</button></div>`);
+
+            document.getElementById('ai-bio-copy-btn').addEventListener('click', () => {
+                navigator.clipboard.writeText(ai).then(() => this.toast('Copied to clipboard'));
+            });
+
+            document.getElementById('ai-bio-apply-btn').addEventListener('click', () => {
+                bioEl.innerText = ai;
+                this.toast('Bio updated');
+            });
+        } catch (err) {
+            modal.setContent(`<div class="p-4 text-sm text-yellow-400">AI request failed. Try again later.</div>`);
+            console.warn('AI bio rewrite failed:', err);
+        }
+    }
+
+    async handleResumeBullets(triggerBtn) {
+        const aboutText = document.querySelector('#about .container')?.innerText || document.body.innerText;
+        const prompt = `Create 5 concise, achievement-focused resume bullets from this bio/context: ${aboutText}`;
+        const modal = this.createModal('AI Resume Bullets', '<div class="p-4 text-sm text-gray-300">Generating bullets...</div>');
+        try {
+            const ai = await getAIResponse(prompt);
+            modal.setContent(`<div class="p-4 text-sm text-gray-300 whitespace-pre-wrap">${escapeHtml(ai)}</div><div class="mt-3 flex gap-2"><button id=\"ai-resume-copy\" class=\"bg-cyber-blue px-3 py-1 rounded text-deep-space text-sm\">Copy</button><a id=\"ai-resume-download\" class=\"bg-matrix-green px-3 py-1 rounded text-deep-space text-sm cursor-pointer\">Download</a></div>`);
+
+            document.getElementById('ai-resume-copy').addEventListener('click', () => {
+                navigator.clipboard.writeText(ai).then(() => this.toast('Copied to clipboard'));
+            });
+
+            document.getElementById('ai-resume-download').addEventListener('click', () => {
+                const blob = new Blob([ai], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'resume-bullets.txt';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            });
+        } catch (err) {
+            modal.setContent(`<div class="p-4 text-sm text-yellow-400">AI request failed. Try again later.</div>`);
+            console.warn('AI resume bullets failed:', err);
+        }
+    }
+
+    async handleProjectAIAsk(projectId) {
+        const projectEl = document.getElementById(projectId);
+        if (!projectEl) return;
+        const title = projectEl.querySelector('h3')?.innerText || projectId;
+        const modal = this.createModal(`Ask about • ${title}`, `<div class="p-4"><input id=\"ai-ask-input\" class=\"w-full bg-gray-800 border border-gray-700 px-3 py-2 rounded text-sm text-aurora-white\" placeholder=\"Ask a question about this project\"/><div class=\"mt-3 flex gap-2\"><button id=\"ai-ask-submit\" class=\"bg-cyber-blue px-3 py-1 rounded text-deep-space\">Ask</button><button id=\"ai-ask-sample\" class=\"bg-gray-700 px-3 py-1 rounded text-aurora-white\">Sample Q</button></div></div>`);
+
+        document.getElementById('ai-ask-sample').addEventListener('click', () => {
+            const input = document.getElementById('ai-ask-input');
+            input.value = 'What was the main technical challenge and its mitigation?';
+        });
+
+        document.getElementById('ai-ask-submit').addEventListener('click', async () => {
+            const q = document.getElementById('ai-ask-input').value.trim();
+            if (!q) return;
+            const prompt = `You are an expert summarizer. Answer concisely about the project ${title}: ${q}`;
+            document.getElementById('ai-modal-content').innerHTML = '<div class="p-4 text-sm text-gray-300">Thinking...</div>';
+            try {
+                const ai = await getAIResponse(prompt);
+                document.getElementById('ai-modal-content').innerHTML = `<div class="p-4 text-sm text-gray-300 whitespace-pre-wrap">${escapeHtml(ai)}</div>`;
+            } catch (err) {
+                document.getElementById('ai-modal-content').innerHTML = '<div class="p-4 text-sm text-yellow-400">AI request failed. Try again later.</div>';
+            }
+        });
+    }
+
+    async handleHeroBlurb() {
+        const prompt = `Write a compelling 2-sentence hero blurb for a DevOps portfolio headlined 'Infrastructure Meets Art' that highlights Kubernetes, multi-cloud, and measurable impact.`;
+        const modal = this.createModal('AI Hero Blurb', '<div class="p-4 text-sm text-gray-300">Generating blurb...</div>');
+        try {
+            const ai = await getAIResponse(prompt);
+            modal.setContent(`<div class="p-4 text-sm text-gray-300 whitespace-pre-wrap">${escapeHtml(ai)}</div><div class="mt-3 flex gap-2"><button id=\"ai-hero-copy\" class=\"bg-cyber-blue px-3 py-1 rounded text-deep-space text-sm\">Copy</button><button id=\"ai-hero-apply\" class=\"bg-matrix-green px-3 py-1 rounded text-deep-space text-sm\">Apply to page</button></div>`);
+
+            document.getElementById('ai-hero-copy').addEventListener('click', () => {
+                navigator.clipboard.writeText(ai).then(() => this.toast('Copied to clipboard'));
+            });
+
+            document.getElementById('ai-hero-apply').addEventListener('click', () => {
+                const p = document.querySelector('#home .scroll-reveal p');
+                if (p) p.innerText = ai;
+                this.toast('Hero blurb applied');
+            });
+        } catch (err) {
+            modal.setContent(`<div class="p-4 text-sm text-yellow-400">AI request failed. Try again later.</div>`);
+            console.warn('AI hero blurb failed:', err);
+        }
+    }
+
+    // Small toast helper
+    toast(msg) {
+        const el = document.createElement('div');
+        el.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg';
+        el.innerText = msg;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2500);
+    }
+
+    // Modal helper
+    createModal(title, contentHtml) {
+        // Remove any existing modal
+        const existing = document.getElementById('ai-modal');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'ai-modal';
+        overlay.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+        overlay.innerHTML = `
+            <div class="absolute inset-0 bg-black opacity-60" tabindex="-1"></div>
+            <div class="relative max-w-2xl w-full bg-deep-space border border-gray-800 rounded-lg overflow-hidden">
+                <div class="p-4 border-b border-gray-800 flex items-center justify-between">
+                    <div class="font-semibold text-cyber-blue">${escapeHtml(title)}</div>
+                    <button id="ai-modal-close" class="text-gray-400">✕</button>
+                </div>
+                <div id="ai-modal-content">${contentHtml}</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const closeBtn = document.getElementById('ai-modal-close');
+        closeBtn.addEventListener('click', () => overlay.remove());
+
+        // Close when clicking the backdrop (outside content)
+        overlay.addEventListener('click', (ev) => {
+            if (ev.target === overlay) overlay.remove();
+        });
+
+        // Accessibility: focus close button and allow ESC to close
+        closeBtn.focus();
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                overlay.remove();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+
+        return {
+            setContent: (html) => { document.getElementById('ai-modal-content').innerHTML = html; }
+        };
     }
 
     // Load mock data from mock-data.json
@@ -162,6 +438,17 @@ class DevOpsPortfolio {
         this.terminalOutput = document.getElementById('terminalOutput');
         this.currentPath = '~';
         this.currentCommand = '';
+        // Load persisted terminal history
+        this.loadTerminalHistory();
+    }
+
+    loadTerminalHistory() {
+        try {
+            const stored = JSON.parse(localStorage.getItem('terminal_history') || '[]');
+            if (Array.isArray(stored)) this.terminalHistory = stored;
+        } catch (e) {
+            this.terminalHistory = [];
+        }
     }
     
     runCommand(command) {
@@ -588,20 +875,70 @@ Available commands:
             this.xtermTerminal.writeln('\x1b[1;36m Type "help" for available commands \x1b[0m');
             this.xtermTerminal.write('\n$ ');
 
-            // Terminal input handling
-            let inputBuffer = '';
-            this.xtermTerminal.onData((data) => {
-                if (data === '\r') {
-                    this.executeTerminalCommand(inputBuffer);
-                    inputBuffer = '';
-                } else if (data === '\u007F') {
-                    if (inputBuffer.length > 0) {
-                        inputBuffer = inputBuffer.slice(0, -1);
+            // Terminal input handling with history and tab completion
+            this.xtermInputBuffer = '';
+            this.xtermHistoryIndex = -1;
+            this.xtermTerminal.onKey(({ key, domEvent }) => {
+                const kc = domEvent.key;
+
+                if (kc === 'Enter') {
+                    const cmd = this.xtermInputBuffer.trim();
+                    this.xtermTerminal.write('\r\n');
+                    if (cmd) this.terminalHistory.push(cmd);
+                    this.executeTerminalCommand(this.xtermInputBuffer);
+                    this.xtermInputBuffer = '';
+                    this.xtermHistoryIndex = -1;
+                    return;
+                }
+
+                if (kc === 'Backspace') {
+                    if (this.xtermInputBuffer.length > 0) {
+                        this.xtermInputBuffer = this.xtermInputBuffer.slice(0, -1);
                         this.xtermTerminal.write('\b \b');
                     }
-                } else {
-                    inputBuffer += data;
-                    this.xtermTerminal.write(data);
+                    return;
+                }
+
+                if (kc === 'Tab') {
+                    domEvent.preventDefault();
+                    const prefix = this.xtermInputBuffer;
+                    const candidates = this.getPossibleCommands(prefix);
+                    if (candidates.length === 1) {
+                        const completion = candidates[0].slice(prefix.length);
+                        this.xtermInputBuffer += completion;
+                        this.xtermTerminal.write(completion);
+                    } else if (candidates.length > 1) {
+                        // show choices
+                        this.xtermTerminal.write('\r\n' + candidates.join('    ') + '\r\n$ ' + this.xtermInputBuffer);
+                    }
+                    return;
+                }
+
+                if (kc === 'ArrowUp') {
+                    if (this.terminalHistory.length === 0) return;
+                    if (this.xtermHistoryIndex === -1) this.xtermHistoryIndex = this.terminalHistory.length - 1;
+                    else this.xtermHistoryIndex = Math.max(0, this.xtermHistoryIndex - 1);
+                    const cmd = this.terminalHistory[this.xtermHistoryIndex] || '';
+                    this.xtermInputBuffer = cmd;
+                    // clear line and write prompt + cmd
+                    this.xtermTerminal.write('\x1b[2K\r$ ' + cmd);
+                    return;
+                }
+
+                if (kc === 'ArrowDown') {
+                    if (this.terminalHistory.length === 0) return;
+                    if (this.xtermHistoryIndex === -1) return;
+                    this.xtermHistoryIndex = Math.min(this.terminalHistory.length - 1, this.xtermHistoryIndex + 1);
+                    const cmd = this.terminalHistory[this.xtermHistoryIndex] || '';
+                    this.xtermInputBuffer = cmd;
+                    this.xtermTerminal.write('\x1b[2K\r$ ' + cmd);
+                    return;
+                }
+
+                // Printable characters
+                if (key && key.length === 1 && !domEvent.ctrlKey && !domEvent.metaKey) {
+                    this.xtermInputBuffer += key;
+                    this.xtermTerminal.write(key);
                 }
             });
             } catch (e) {
@@ -650,7 +987,32 @@ Available commands:
         }
 
         this.xtermTerminal.writeln(output);
+        // Append to buffer for copy/export (strip ANSI escape sequences for clipboard)
+        const plain = output.replace(/\x1b\[[0-9;]*m/g, '');
+        this.xtermBuffer += plain + '\n';
+        // Persist history
+        try { localStorage.setItem('terminal_history', JSON.stringify(this.terminalHistory)); } catch (e) {}
         this.xtermTerminal.write('$ ');
+    }
+
+    copyXtermBuffer() {
+        if (!this.xtermBuffer) {
+            this.toast('Nothing to copy');
+            return;
+        }
+        navigator.clipboard.writeText(this.xtermBuffer).then(() => this.toast('Terminal output copied'));
+    }
+
+    // Return possible commands for tab completion
+    getPossibleCommands(prefix = '') {
+        const keys = new Set();
+        Object.keys(this.terminalCommands).forEach(k => keys.add(k));
+        if (this.mockData && this.mockData.commands) {
+            Object.keys(this.mockData.commands).forEach(k => keys.add(k));
+        }
+        const list = Array.from(keys).sort();
+        if (!prefix) return list;
+        return list.filter(k => k.startsWith(prefix));
     }
 
     // Setup 3D Rotating Cube on About Page
@@ -706,8 +1068,18 @@ function runTerminalCommand(command) {
 function clearTerminalOutput() {
     if (window.portfolio && window.portfolio.xtermTerminal) {
         window.portfolio.xtermTerminal.clear();
+            // Clear internal buffer
+            window.portfolio.xtermBuffer = '';
+            try { localStorage.setItem('terminal_history', JSON.stringify([])); } catch (e) {}
     }
 }
+
+    // Copy terminal output to clipboard
+    function copyTerminalOutput() {
+        if (window.portfolio) {
+            window.portfolio.copyXtermBuffer();
+        }
+    }
 
 // Global function for sending chat messages
 async function sendChatMessage() {
