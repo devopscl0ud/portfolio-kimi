@@ -36,6 +36,8 @@ class DevOpsPortfolio {
     init() {
         // Load mock data
         this.loadMockData();
+        // Load runtime config (optional config.json)
+        this.loadRuntimeConfig();
         
         this.setupScrollAnimations();
         this.setupMetricCounters();
@@ -507,6 +509,11 @@ Available commands:
                     Send
                 </button>
             </div>
+            <div class="mt-3 flex gap-2" id="chatbot-quick-replies" role="navigation" aria-label="Quick replies">
+                <button class="bg-gray-800 border border-cyber-blue text-cyber-blue px-3 py-1 rounded text-xs" onclick="sendQuickReply('Tell me about Kubernetes skills')">K8s Skills</button>
+                <button class="bg-gray-800 border border-matrix-green text-matrix-green px-3 py-1 rounded text-xs" onclick="sendQuickReply('Show me projects')">Projects</button>
+                <button class="bg-gray-800 border border-electric-purple text-electric-purple px-3 py-1 rounded text-xs" onclick="sendQuickReply('How can I contact you?')">Contact Me</button>
+            </div>
         `;
         messages.innerHTML += inputHTML;
         
@@ -518,12 +525,35 @@ Available commands:
         });
     }
 
+    // Try to load optional runtime config (config.json)
+    loadRuntimeConfig() {
+        fetch('./config.json')
+            .then(res => res.json())
+            .then(cfg => {
+                if (cfg && cfg.GOOGLE_AI_API_KEY) {
+                    localStorage.setItem('GOOGLE_AI_API_KEY', cfg.GOOGLE_AI_API_KEY);
+                    console.log('✓ Loaded Google AI API key from config.json');
+                }
+            })
+            .catch(() => {
+                // config.json is optional
+            });
+    }
+
     // Setup Xterm.js Terminal
     setupXTerminal() {
         const termContainer = document.getElementById('xterm');
-        if (!termContainer || typeof Terminal === 'undefined') return;
+        if (!termContainer) return;
 
-        try {
+        // If xterm library not yet loaded, retry a few times
+        const tryInit = (attemptsLeft = 5) => {
+            if (typeof Terminal === 'undefined') {
+                if (attemptsLeft <= 0) return console.warn('Xterm.js not available');
+                setTimeout(() => tryInit(attemptsLeft - 1), 500);
+                return;
+            }
+
+            try {
             this.xtermTerminal = new Terminal({
                 cols: 80,
                 rows: 24,
@@ -574,9 +604,12 @@ Available commands:
                     this.xtermTerminal.write(data);
                 }
             });
-        } catch (e) {
-            console.warn('Xterm.js initialization failed:', e);
-        }
+            } catch (e) {
+                console.warn('Xterm.js initialization failed:', e);
+            }
+        };
+
+        tryInit();
     }
 
     executeTerminalCommand(command) {
@@ -589,10 +622,29 @@ Available commands:
         this.xtermTerminal.write('\n');
 
         let output = '';
+        // Exact match
         if (this.mockData && this.mockData.commands[cmd]) {
             output = this.mockData.commands[cmd].output;
         } else if (this.terminalCommands[cmd]) {
             output = this.terminalCommands[cmd].call(this);
+        } else if (this.mockData) {
+            // Fuzzy match keys (allow variants like 'helm ls' -> 'helm list')
+            const keys = Object.keys(this.mockData.commands);
+            const foundKey = keys.find(k => k === cmd || k.startsWith(cmd) || cmd.startsWith(k) || k.includes(cmd) || cmd.includes(k));
+            if (foundKey) {
+                output = this.mockData.commands[foundKey].output;
+            } else {
+                // Synonym mapping
+                const synonyms = {
+                    'helm ls': 'helm list',
+                    'kubectl get pods': 'kubectl get pods --all-namespaces'
+                };
+                if (synonyms[cmd] && this.mockData.commands[synonyms[cmd]]) {
+                    output = this.mockData.commands[synonyms[cmd]].output;
+                } else {
+                    output = `bash: ${cmd}: command not found\nType 'help' for available commands.`;
+                }
+            }
         } else {
             output = `bash: ${cmd}: command not found\nType 'help' for available commands.`;
         }
@@ -682,6 +734,25 @@ async function sendChatMessage() {
     messages.appendChild(loadingDiv);
     messages.scrollTop = messages.scrollHeight;
 
+    // Rate limiting: 5 messages per minute per client (simple local check)
+    const now = Date.now();
+    const windowMs = 60 * 1000;
+    const maxMsgs = 5;
+    let timestamps = JSON.parse(localStorage.getItem('chat_timestamps') || '[]');
+    // Purge older than window
+    timestamps = timestamps.filter(ts => now - ts < windowMs);
+    if (timestamps.length >= maxMsgs) {
+        loadingDiv.remove();
+        const rateDiv = document.createElement('div');
+        rateDiv.className = 'mb-2 text-yellow-400 text-sm';
+        rateDiv.innerHTML = `<strong>Kimi:</strong> Chatbot rate limit exceeded. Try again in a moment or email bandivenky2222@gmail.com`;
+        messages.appendChild(rateDiv);
+        messages.scrollTop = messages.scrollHeight;
+        return;
+    }
+    timestamps.push(now);
+    localStorage.setItem('chat_timestamps', JSON.stringify(timestamps));
+
     // Get AI response (async)
     let response = await getAIResponse(userMessage);
     
@@ -695,6 +766,14 @@ async function sendChatMessage() {
     messages.scrollTop = messages.scrollHeight;
 }
 
+// Quick replies helper
+function sendQuickReply(text) {
+    const input = document.getElementById('chatbot-input');
+    if (!input) return;
+    input.value = text;
+    sendChatMessage();
+}
+
 async function getAIResponse(message) {
     const msg = message.toLowerCase();
     
@@ -703,23 +782,34 @@ async function getAIResponse(message) {
     
     if (apiKey && apiKey !== 'YOUR_API_KEY_HERE') {
         try {
-            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + apiKey, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+            // Try a POST to Generative API. Use Authorization header when possible, fallback to key in query.
+            const url = 'https://generativelanguage.googleapis.com/v1beta/models/text-bison-001:generate';
+            const headers = { 'Content-Type': 'application/json' };
+            // If apiKey looks like a bearer token (starts with 'ya29.'), use Authorization header
+            if (apiKey.startsWith('ya29.')) {
+                headers['Authorization'] = `Bearer ${apiKey}`;
+            }
+
+            const body = JSON.stringify({
+                "prompt": {
+                    "text": `You are Kimi, a helpful AI assistant for Venkatesh's DevOps portfolio. Answer succinctly: ${message}\n\nAbout Venkatesh:\n- Principal DevOps Engineer with 8+ years experience\n- Kubernetes expert (50+ clusters managed)\n- GCP certified architect\n- Tech stack: K8s, Terraform, Docker, Helm, GCP, AWS, Jenkins, GitLab CI, Prometheus, Grafana\n- Email: bandivenky2222@gmail.com`
                 },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: `You are Kimi, a helpful AI assistant for Venkatesh's DevOps portfolio. Answer this question about Venkatesh: ${message}\n\nAbout Venkatesh:\n- Principal DevOps Engineer with 8+ years experience\n- Kubernetes expert (50+ clusters managed)\n- GCP certified architect\n- Tech stack: K8s, Terraform, Docker, Helm, GCP, AWS, Jenkins, GitLab CI, Prometheus, Grafana\n- Email: bandivenky2222@gmail.com`
-                        }]
-                    }]
-                })
+                "temperature": 0.2,
+                "maxOutputTokens": 256
             });
-            
+
+            // If no Authorization header, append key as query parameter
+            const fetchUrl = headers['Authorization'] ? url : `${url}?key=${apiKey}`;
+
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 7000);
+            const response = await fetch(fetchUrl, { method: 'POST', headers, body, signal: controller.signal });
+            clearTimeout(timeout);
             if (response.ok) {
                 const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || getDefaultResponse(msg);
+                // The exact shape may vary; try common fields and fallback to default
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.output?.[0]?.content?.text || data?.result?.output?.[0]?.content?.text;
+                if (text) return text;
             }
         } catch (err) {
             console.warn('Google AI API failed:', err);

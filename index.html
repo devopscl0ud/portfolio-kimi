@@ -177,6 +177,11 @@
             body { font-weight: 500; }
             .neon-text, .matrix-text, .purple-glow { text-shadow: none; }
         }
+
+        /* Chatbot widget safe positioning */
+        #chatbot-widget { right: 1rem; bottom: 1rem; z-index: 9999; }
+        #chatbot-messages { max-height: 60vh; width: 400px; }
+        @media (max-width: 480px) { #chatbot-messages { width: calc(100vw - 2rem); } }
         
         .glassmorphism {
             background: rgba(10, 10, 10, 0.8);
