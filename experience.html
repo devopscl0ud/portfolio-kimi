@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experience - Bandi Venkatesh | Enterprise War Stories</title>
+    <meta name="description" content="Deep-dive into enterprise-scale DevOps transformations: Pharmacy SaaS platform, multi-tenant architectures, and infrastructure automation success stories.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00F5FF',
+                        'matrix-green': '#39FF14',
+                        'electric-purple': '#BC13FE',
+                        'deep-space': '#0A0A0A',
+                        'aurora-white': '#F8F8FF'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glassmorphism {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        
+        .neon-text {
+            color: #00F5FF;
+            text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
+        }
+        
+        .matrix-text {
+            color: #39FF14;
+            text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
+        }
+        
+        .purple-glow {
+            color: #BC13FE;
+            text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .case-study {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .case-study::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .case-study:hover::before {
+            left: 100%;
+        }
+        
+        .case-study:hover {
+            border-color: #00F5FF;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(57, 255, 20, 0.1));
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.3);
+        }
+        
+        .architecture-diagram {
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .code-snippet {
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .impact-metric {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 2rem;
+        }
+        
+        .timeline-connector {
+            position: relative;
+        }
+        
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(to right, #00F5FF, #39FF14);
+            transform: translateY(-50%);
+        }
+        
+        .challenge-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .challenge-solution {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
+    <!-- Particle Background -->
+    <div class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="./resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin">
+                    <div>
+                        <h1 class="font-orbitron font-bold text-xl neon-text">Bandi Venkatesh</h1>
+                        <p class="text-sm text-gray-400">Principal DevOps Engineer</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-cyber-blue transition-colors duration-300">Home</a>
+                    <a href="about.html" class="hover:text-cyber-blue transition-colors duration-300">About</a>
+                    <a href="skills.html" class="hover:text-cyber-blue transition-colors duration-300">Skills</a>
+                    <a href="#experience" class="text-cyber-blue">Experience</a>
+                    <a href="projects.html" class="hover:text-cyber-blue transition-colors duration-300">Projects</a>
+                    <a href="contact.html" class="hover:text-cyber-blue transition-colors duration-300">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="experience" class="pt-32 pb-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="font-orbitron font-black text-5xl lg:text-6xl mb-6">
+                    <span class="neon-text">Enterprise</span> <span class="matrix-text">War Stories</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Real-world infrastructure transformations, scaling challenges, and DevOps success stories 
+                    from healthcare, fintech, and enterprise software environments.
+                </p>
+            </div>
+            
+            <!-- Impact Metrics -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16 scroll-reveal">
+                <div class="metric-card p-6 rounded-lg text-center">
+                    <div class="impact-metric text-cyber-blue">2.3M+</div>
+                    <div class="text-gray-400">Users Impacted</div>
+                </div>
+                <div class="metric-card p-6 rounded-lg text-center">
+                    <div class="impact-metric text-matrix-green">$520K+</div>
+                    <div class="text-gray-400">Annual Savings</div>
+                </div>
+                <div class="metric-card p-6 rounded-lg text-center">
+                    <div class="impact-metric text-electric-purple">99.97%</div>
+                    <div class="text-gray-400">Average Uptime</div>
+                </div>
+                <div class="metric-card p-6 rounded-lg text-center">
+                    <div class="impact-metric text-cyber-blue">85%</div>
+                    <div class="text-gray-400">Incident Reduction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Current Role: Uncommon Design -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="case-study p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-cyber-blue rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl font-bold text-deep-space">UD</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl neon-text">Uncommon Design</h3>
+                        <p class="text-gray-400">Principal DevOps Engineer • 2023 - Present</p>
+                    </div>
+                </div>
+                
+                <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Tenant Zero Architecture</h4>
+                
+                <div class="challenge-solution">
+                    <div>
+                        <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Challenge</h5>
+                        <p class="text-gray-300 mb-4">
+                            Build the first multi-tenant GKE environment capable of serving 15+ concurrent clients 
+                            with complete isolation, security compliance, and self-service capabilities.
+                        </p>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>• Namespace isolation and resource quotas</li>
+                            <li>• OPA policy enforcement</li>
+                            <li>• Network segmentation and security</li>
+                            <li>• Self-service tenant provisioning</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Solution</h5>
+                        <p class="text-gray-300 mb-4">
+                            Architected a comprehensive multi-tenant platform with automated provisioning, 
+                            policy-driven security, and centralized monitoring.
+                        </p>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>• GKE clusters with namespace-as-a-service</li>
+                            <li>• OPA policies for governance</li>
+                            <li>• Istio service mesh for security</li>
+                            <li>• ArgoCD for GitOps deployment</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Architecture Diagram -->
+                <div class="architecture-diagram scroll-reveal">
+                    <h5 class="font-orbitron font-bold text-lg neon-text mb-4">Multi-Tenant Architecture</h5>
+                    <div class="mermaid">
+                        graph TB
+                            subgraph "GKE Cluster"
+                                subgraph "Tenant A Namespace"
+                                    A1[App Pods]
+                                    A2[Service Accounts]
+                                    A3[Resource Quotas]
+                                end
+                                subgraph "Tenant B Namespace"
+                                    B1[App Pods]
+                                    B2[Service Accounts]
+                                    B3[Resource Quotas]
+                                end
+                                subgraph "Shared Services"
+                                    S1[Istio Ingress]
+                                    S2[OPA Gatekeeper]
+                                    S3[Monitoring]
+                                end
+                            end
+                            
+                            subgraph "OPA Policies"
+                                P1[Namespace Limits]
+                                P2[Security Policies]
+                                P3[Resource Constraints]
+                            end
+                            
+                            A1 --> S1
+                            B1 --> S1
+                            S2 --> P1
+                            S2 --> P2
+                            S2 --> P3
+                    </div>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-cyber-blue">15</div>
+                        <div class="text-gray-400">Concurrent Clients</div>
+                    </div>
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-matrix-green">$200K</div>
+                        <div class="text-gray-400">ARR from Platform</div>
+                    </div>
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-electric-purple">30min</div>
+                        <div class="text-gray-400">Tenant Provisioning</div>
+                    </div>
+                </div>
+                
+                <!-- Code Artifact -->
+                <div class="code-snippet scroll-reveal">
+                    <h5 class="font-orbitron font-bold text-lg matrix-text mb-4">OPA Policy Example</h5>
+                    <pre><code>package kubernetes.admission
+
+deny[msg] {
+    input.request.kind.kind == "Pod"
+    input.request.object.spec.containers[_].securityContext.privileged == true
+    msg := "Privileged containers are not allowed"
+}
+
+deny[msg] {
+    input.request.kind.kind == "Pod"
+    input.request.object.spec.containers[_].image
+    not starts_with(input.request.object.spec.containers[_].image, "gcr.io/")
+    msg := "Only images from approved registries are allowed"
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- WFM Technologies -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="case-study p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-matrix-green rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl font-bold text-deep-space">WFM</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl matrix-text">WFM Technologies</h3>
+                        <p class="text-gray-400">DevOps Architect • 2021 - 2023</p>
+                    </div>
+                </div>
+                
+                <h4 class="font-orbitron font-bold text-xl purple-glow mb-6">PrimeRx Platform Scaling</h4>
+                
+                <div class="challenge-solution">
+                    <div>
+                        <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Challenge</h5>
+                        <p class="text-gray-300 mb-4">
+                            Scale pharmacy SaaS platform for 1000+ US pharmacies with HIPAA compliance, 
+                            handling 2M+ prescriptions monthly while maintaining 99.95% uptime.
+                        </p>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>• HIPAA compliance requirements</li>
+                            <li>• 300% traffic spike during peak hours</li>
+                            <li>• Multi-region disaster recovery</li>
+                            <li>• Zero-downtime deployments</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Solution</h5>
+                        <p class="text-gray-300 mb-4">
+                            Built multi-region GKE infrastructure with Istio service mesh, Cloud SQL 
+                            with read replicas, and comprehensive security stack.
+                        </p>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>• Multi-region GKE with Istio</li>
+                            <li>• Cloud SQL with read replicas</li>
+                            <li>• Falco for runtime security</li>
+                            <li>• Trivy for image scanning</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Security Stack -->
+                <div class="architecture-diagram scroll-reveal">
+                    <h5 class="font-orbitron font-bold text-lg neon-text mb-4">DevSecOps Security Stack</h5>
+                    <div class="mermaid">
+                        graph LR
+                            subgraph "Development"
+                                A[Code Commit]
+                                B[GitHub Actions]
+                                C[Trivy Scan]
+                                D[Snyk Analysis]
+                            end
+                            
+                            subgraph "Deployment"
+                                E[Container Registry]
+                                F[Security Gates]
+                                G[Signed Images]
+                            end
+                            
+                            subgraph "Runtime"
+                                H[GKE Cluster]
+                                I[Falco Runtime]
+                                J[OPA Policies]
+                                K[Vault Secrets]
+                            end
+                            
+                            A --> B
+                            B --> C
+                            C --> D
+                            D --> E
+                            E --> F
+                            F --> G
+                            G --> H
+                            H --> I
+                            H --> J
+                            H --> K
+                    </div>
+                </div>
+                
+                <!-- Scale Metrics -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-cyber-blue">2M+</div>
+                        <div class="text-gray-400">Prescriptions/Month</div>
+                    </div>
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-matrix-green">500</div>
+                        <div class="text-gray-400">TPS Peak</div>
+                    </div>
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-electric-purple">300%</div>
+                        <div class="text-gray-400">Traffic Spike Handled</div>
+                    </div>
+                    <div class="metric-card p-6 rounded-lg text-center">
+                        <div class="impact-metric text-cyber-blue">$180K</div>
+                        <div class="text-gray-400">Annual Savings</div>
+                    </div>
+                </div>
+                
+                <!-- Cost Optimization Story -->
+                <div class="scroll-reveal">
+                    <h5 class="font-orbitron font-bold text-lg matrix-text mb-4">Cost Optimization Success</h5>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h6 class="font-semibold text-cyber-blue mb-3">Before Optimization</h6>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Over-provisioned nodes: $240K/year</li>
+                                <li>• On-demand instances only</li>
+                                <li>• No spot instance usage</li>
+                                <li>• Manual scaling decisions</li>
+                            </ul>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h6 class="font-semibold text-matrix-green mb-3">After Optimization</h6>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Right-sized instances: $180K/year savings</li>
+                                <li>• 40% spot instance adoption</li>
+                                <li>• Automated autoscaling</li>
+                                <li>• Committed use discounts</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Cognizant -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="case-study p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-electric-purple rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl font-bold text-deep-space">CT</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl purple-glow">Cognizant</h3>
+                        <p class="text-gray-400">Cloud Engineer • 2018 - 2021</p>
+                    </div>
+                </div>
+                
+                <h4 class="font-orbitron font-bold text-xl neon-text mb-6">DevOps Transformation Journey</h4>
+                
+                <div class="challenge-solution">
+                    <div>
+                        <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Transformation</h5>
+                        <p class="text-gray-300 mb-4">
+                            Career pivot from operations to DevOps in 18 months while achieving 
+                            Google Cloud ACE certification and building automation capabilities.
+                        </p>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>• Zero to hero in cloud engineering</li>
+                            <li>• Google ACE in 11 months</li>
+                            <li>• Full-time work while studying</li>
+                            <li>• Mentoring junior engineers</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Impact</h5>
+                        <p class="text-gray-300 mb-4">
+                            Built comprehensive automation framework and CI/CD pipelines that 
+                            transformed team productivity and deployment reliability.
+                        </p>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>• 30+ Python automation scripts</li>
+                            <li>• 10+ CI/CD pipelines</li>
+                            <li>• 80% deployment time reduction</li>
+                            <li>• 5 engineers trained</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Learning Timeline -->
+                <div class="scroll-reveal">
+                    <h5 class="font-orbitron font-bold text-lg purple-glow mb-4">18-Month Transformation Timeline</h5>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h6 class="font-semibold text-cyber-blue mb-3">Months 1-6</h6>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• GCP fundamentals</li>
+                                <li>• Linux administration</li>
+                                <li>• Python scripting</li>
+                                <li>• Docker basics</li>
+                            </ul>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h6 class="font-semibold text-matrix-green mb-3">Months 7-12</h6>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Kubernetes deep dive</li>
+                                <li>• CI/CD implementation</li>
+                                <li>• Infrastructure automation</li>
+                                <li>• Monitoring setup</li>
+                            </ul>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h6 class="font-semibold text-electric-purple mb-3">Months 13-18</h6>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• GCP ACE certification</li>
+                                <li>• Advanced Kubernetes</li>
+                                <li>• Security implementation</li>
+                                <li>• Team leadership</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SYKES -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="case-study p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-cyber-blue rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl font-bold text-deep-space">SK</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl neon-text">SYKES</h3>
+                        <p class="text-gray-400">IT Operations Specialist • 2016 - 2018</p>
+                    </div>
+                </div>
+                
+                <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Foundation Building</h4>
+                
+                <div class="scroll-reveal">
+                    <p class="text-gray-300 mb-6">
+                        Started career in IT operations, mastering ITIL processes, incident management, 
+                        and system reliability principles that would become the foundation for DevOps excellence.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-cyber-blue mb-4">Key Learnings</h5>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• ITIL service management</li>
+                                <li>• SLA/SLO fundamentals</li>
+                                <li>• Incident triage processes</li>
+                                <li>• Root cause analysis</li>
+                                <li>• Change management</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-matrix-green mb-4">Core Philosophy</h5>
+                            <blockquote class="text-gray-300 italic">
+                                "Every minute of downtime is a trust deficit. Reliability isn't just 
+                                about uptime - it's about maintaining user confidence and business continuity."
+                            </blockquote>
+                            <p class="text-gray-400 text-sm mt-4">— Core principle carried forward</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-6 text-center">
+            <div class="glassmorphism p-12 rounded-lg scroll-reveal">
+                <h3 class="text-3xl font-orbitron font-bold neon-text mb-6">Ready for Your Transformation?</h3>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    These success stories demonstrate the impact of strategic DevOps implementation. 
+                    Let's discuss how similar transformations can benefit your organization.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="projects.html" class="bg-cyber-blue text-deep-space px-8 py-4 rounded-lg font-semibold hover:bg-opacity-80 transition-all duration-300">
+                        View Detailed Projects
+                    </a>
+                    <a href="contact.html" class="border-2 border-matrix-green text-matrix-green px-8 py-4 rounded-lg font-semibold hover:bg-matrix-green hover:text-deep-space transition-all duration-300">
+                        Schedule Consultation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">
+                © 2025 Bandi Venkatesh. Built with DevOps excellence - containerized, monitored, and continuously delivered.
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#00F5FF',
+                primaryTextColor: '#F8F8FF',
+                primaryBorderColor: '#39FF14',
+                lineColor: '#BC13FE',
+                secondaryColor: '#1a1a2e',
+                tertiaryColor: '#16213e'
+            }
+        });
+        
+        // Initialize scroll animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Animate metric counters
+            animateMetricCounters();
+        });
+        
+        function animateMetricCounters() {
+            const counters = document.querySelectorAll('.impact-metric');
+            
+            const animateCounter = (counter) => {
+                const text = counter.textContent;
+                const isPercentage = text.includes('%');
+                const isCurrency = text.includes('$');
+                const isTime = text.includes('min');
+                const isUsers = text.includes('M+');
+                const isTPS = text.includes('TPS');
+                
+                let target = parseInt(text.replace(/[^0-9]/g, ''));
+                let current = 0;
+                const increment = target / 100;
+                
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        let display = Math.floor(current);
+                        if (isCurrency) display = '$' + display + 'K+';
+                        if (isPercentage) display = display + '%';
+                        if (isTime) display = display + 'min';
+                        if (isUsers) display = (display/10).toFixed(1) + 'M+';
+                        if (isTPS) display = display + 'TPS';
+                        
+                        counter.textContent = display;
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = text;
+                    }
+                };
+                
+                updateCounter();
+            };
+            
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            counters.forEach(counter => {
+                counterObserver.observe(counter);
+            });
+        }
+    </script>
+    
+    <script src="main.js"></script>
+</body>
+</html>

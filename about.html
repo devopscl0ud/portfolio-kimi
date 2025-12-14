@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Bandi Venkatesh | DevOps Journey & Philosophy</title>
+    <meta name="description" content="From Mechanical Engineer to Principal DevOps Architect - discover the journey, philosophy, and values that drive infrastructure excellence.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00F5FF',
+                        'matrix-green': '#39FF14',
+                        'electric-purple': '#BC13FE',
+                        'deep-space': '#0A0A0A',
+                        'aurora-white': '#F8F8FF'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glassmorphism {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        
+        .neon-text {
+            color: #00F5FF;
+            text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
+        }
+        
+        .matrix-text {
+            color: #39FF14;
+            text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .timeline-item {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s ease;
+        }
+        
+        .timeline-item.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .skill-globe {
+            width: 100%;
+            height: 400px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .philosophy-card {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .philosophy-card:hover {
+            transform: rotateY(10deg) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.3);
+        }
+        
+        .career-pivot {
+            background: linear-gradient(45deg, rgba(0, 245, 255, 0.1), rgba(57, 255, 20, 0.1));
+            border-left: 4px solid #00F5FF;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
+    <!-- Particle Background -->
+    <div class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="./resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin">
+                    <div>
+                        <h1 class="font-orbitron font-bold text-xl neon-text">Bandi Venkatesh</h1>
+                        <p class="text-sm text-gray-400">Principal DevOps Engineer</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-cyber-blue transition-colors duration-300">Home</a>
+                    <a href="#about" class="text-cyber-blue">About</a>
+                    <a href="skills.html" class="hover:text-cyber-blue transition-colors duration-300">Skills</a>
+                    <a href="experience.html" class="hover:text-cyber-blue transition-colors duration-300">Experience</a>
+                    <a href="projects.html" class="hover:text-cyber-blue transition-colors duration-300">Projects</a>
+                    <a href="contact.html" class="hover:text-cyber-blue transition-colors duration-300">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="about" class="pt-32 pb-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="font-orbitron font-black text-5xl lg:text-6xl mb-6">
+                    <span class="neon-text">Career</span> <span class="matrix-text">Odyssey</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    From mechanical engineering to cloud architecture - a journey of continuous learning, 
+                    innovation, and infrastructure excellence that impacts millions of users.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Career Timeline -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center neon-text mb-16 scroll-reveal">Professional Evolution</h3>
+            
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-cyber-blue via-matrix-green to-electric-purple"></div>
+                
+                <!-- Timeline Items -->
+                <div class="space-y-16">
+                    <!-- Mechanical Engineer -->
+                    <div class="timeline-item flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h4 class="font-orbitron font-bold text-xl neon-text mb-2">Mechanical Engineer</h4>
+                                <p class="text-gray-400 mb-4">Foundation Years • 2014-2016</p>
+                                <p class="text-gray-300">
+                                    Started with mechanical engineering principles, learning about systems design, 
+                                    stress analysis, and optimization. Developed strong analytical thinking and 
+                                    problem-solving skills that would later translate to infrastructure architecture.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-cyber-blue rounded-full border-4 border-deep-space relative z-10"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                    
+                    <!-- IT Operations -->
+                    <div class="timeline-item flex items-center">
+                        <div class="w-1/2 pr-8"></div>
+                        <div class="w-8 h-8 bg-matrix-green rounded-full border-4 border-deep-space relative z-10"></div>
+                        <div class="w-1/2 pl-8">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h4 class="font-orbitron font-bold text-xl matrix-text mb-2">IT Operations Specialist</h4>
+                                <p class="text-gray-400 mb-4">SYKES • 2016-2018</p>
+                                <p class="text-gray-300">
+                                    Transitioned to IT operations, mastering ITIL processes, SLA management, 
+                                    and incident response. Learned the critical importance of system reliability 
+                                    and the cost of downtime in enterprise environments.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cloud Engineer -->
+                    <div class="timeline-item flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h4 class="font-orbitron font-bold text-xl purple-glow mb-2">Cloud Engineer</h4>
+                                <p class="text-gray-400 mb-4">Cognizant • 2018-2021</p>
+                                <p class="text-gray-300">
+                                    Career pivot to cloud engineering. Achieved Google Cloud ACE certification 
+                                    in 11 months while building automation scripts and CI/CD pipelines. 
+                                    Reduced deployment time by 80% and trained 5 junior engineers.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-electric-purple rounded-full border-4 border-deep-space relative z-10"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                    
+                    <!-- DevOps Architect -->
+                    <div class="timeline-item flex items-center">
+                        <div class="w-1/2 pr-8"></div>
+                        <div class="w-8 h-8 bg-cyber-blue rounded-full border-4 border-deep-space relative z-10"></div>
+                        <div class="w-1/2 pl-8">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h4 class="font-orbitron font-bold text-xl neon-text mb-2">DevOps Architect</h4>
+                                <p class="text-gray-400 mb-4">WFM Technologies • 2021-2023</p>
+                                <p class="text-gray-300">
+                                    Architected multi-region GKE infrastructure handling 2M+ prescriptions/month 
+                                    with 99.95% uptime and zero HIPAA violations. Achieved $180K annual savings 
+                                    through optimization and handled 300% traffic spikes during peak hours.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Principal DevOps Engineer -->
+                    <div class="timeline-item flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h4 class="font-orbitron font-bold text-xl matrix-text mb-2">Principal DevOps Engineer</h4>
+                                <p class="text-gray-400 mb-4">Uncommon Design • 2023-Present</p>
+                                <p class="text-gray-300">
+                                    Leading multi-tenant GKE platform architecture serving 15+ concurrent clients 
+                                    with namespace isolation and OPA policies. Generating $200K ARR from platform 
+                                    services while maintaining security and compliance standards.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-matrix-green rounded-full border-4 border-deep-space relative z-10 animate-pulse"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 3D Skill Globe -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center neon-text mb-16 scroll-reveal">Skill Distribution</h3>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="scroll-reveal">
+                    <div id="skillGlobe" class="skill-globe glassmorphism flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🌍</div>
+                            <p class="text-gray-400">Interactive 3D Skill Globe</p>
+                            <p class="text-sm text-gray-500 mt-2">Click and drag to explore</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6 scroll-reveal">
+                    <div class="philosophy-card p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl neon-text mb-4">Infrastructure as Code</h4>
+                        <p class="text-gray-300 mb-4">
+                            Every piece of infrastructure is defined, versioned, and deployed through code. 
+                            Terraform, Kubernetes manifests, and GitOps workflows ensure reproducible, 
+                            scalable systems.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm">Terraform</span>
+                            <span class="bg-matrix-green text-deep-space px-3 py-1 rounded text-sm">Kubernetes</span>
+                            <span class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm">ArgoCD</span>
+                        </div>
+                    </div>
+                    
+                    <div class="philosophy-card p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl matrix-text mb-4">Observability First</h4>
+                        <p class="text-gray-300 mb-4">
+                            You can't optimize what you don't measure. Comprehensive monitoring, logging, 
+                            and tracing provide complete visibility into system behavior and performance.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm">Prometheus</span>
+                            <span class="bg-matrix-green text-deep-space px-3 py-1 rounded text-sm">Grafana</span>
+                            <span class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm">Jaeger</span>
+                        </div>
+                    </div>
+                    
+                    <div class="philosophy-card p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl purple-glow mb-4">Security by Design</h4>
+                        <p class="text-gray-300 mb-4">
+                            Security isn't an afterthought - it's woven into every layer of the infrastructure. 
+                            Zero trust, least privilege, and continuous scanning protect against threats.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm">OPA</span>
+                            <span class="bg-matrix-green text-deep-space px-3 py-1 rounded text-sm">Falco</span>
+                            <span class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm">Vault</span>
+                        </div>
+                    </div>
+                    
+                    <div class="philosophy-card p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl neon-text mb-4">Developer Experience</h4>
+                        <p class="text-gray-300 mb-4">
+                            Great infrastructure empowers developers. Self-service portals, automated 
+                            provisioning, and intuitive tooling accelerate innovation and reduce friction.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm">Backstage</span>
+                            <span class="bg-matrix-green text-deep-space px-3 py-1 rounded text-sm">ArgoCD</span>
+                            <span class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm">Crossplane</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Career Pivot Story -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center matrix-text mb-16 scroll-reveal">The Great Pivot</h3>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="career-pivot p-8 rounded-lg scroll-reveal">
+                    <h4 class="font-orbitron font-bold text-2xl neon-text mb-6">From Mechanical to Digital</h4>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Challenge</h5>
+                            <p class="text-gray-300 mb-4">
+                                Transitioning from mechanical engineering to cloud architecture required learning 
+                                an entirely new paradigm. The principles were similar - systems thinking, stress 
+                                analysis, optimization - but the tools and environment were completely different.
+                            </p>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Learn cloud fundamentals from scratch</li>
+                                <li>• Master containerization and orchestration</li>
+                                <li>• Understand distributed systems</li>
+                                <li>• Build automation and CI/CD skills</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Strategy</h5>
+                            <p class="text-gray-300 mb-4">
+                                Leveraged strong analytical foundation while immersing in hands-on practice. 
+                                Achieved Google Cloud ACE certification in 11 months through consistent study, 
+                                practical labs, and real-world application.
+                            </p>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Daily hands-on practice with GCP</li>
+                                <li>• Built 30+ automation scripts</li>
+                                <li>• Created 10+ CI/CD pipelines</li>
+                                <li>• Mentored 5 junior engineers</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Personal Philosophy -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center purple-glow mb-16 scroll-reveal">Core Philosophy</h3>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12 scroll-reveal">
+                    <blockquote class="text-2xl lg:text-3xl font-light italic text-gray-300 mb-6">
+                        "Infrastructure should be invisible, self-healing, and beautiful. 
+                        When done right, users never know it exists, but they feel its impact every day."
+                    </blockquote>
+                    <cite class="text-cyber-blue font-semibold">— Bandi Venkatesh</cite>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center scroll-reveal">
+                        <div class="text-4xl mb-4">🎯</div>
+                        <h4 class="font-orbitron font-bold text-lg neon-text mb-2">Purpose-Driven</h4>
+                        <p class="text-gray-400">
+                            Every technical decision serves a business purpose. 
+                            Infrastructure exists to enable innovation, not to be technology for its own sake.
+                        </p>
+                    </div>
+                    <div class="text-center scroll-reveal">
+                        <div class="text-4xl mb-4">🔄</div>
+                        <h4 class="font-orbitron font-bold text-lg matrix-text mb-2">Continuous Evolution</h4>
+                        <p class="text-gray-400">
+                            Technology and requirements change constantly. 
+                            Systems must be designed for change, with automation and observability built-in.
+                        </p>
+                    </div>
+                    <div class="text-center scroll-reveal">
+                        <div class="text-4xl mb-4">🤝</div>
+                        <h4 class="font-orbitron font-bold text-lg purple-glow mb-2">Collaborative Excellence</h4>
+                        <p class="text-gray-400">
+                            Great infrastructure is built by teams, not individuals. 
+                            Knowledge sharing, documentation, and mentorship create lasting impact.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Behind the Scenes -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center neon-text mb-16 scroll-reveal">Behind the Scenes</h3>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="scroll-reveal">
+                    <div class="glassmorphism p-8 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Daily Workflow</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-cyber-blue rounded-full flex items-center justify-center text-deep-space font-bold">1</div>
+                                <div>
+                                    <p class="font-semibold">Morning Standup</p>
+                                    <p class="text-gray-400 text-sm">Team sync, incident review, priority alignment</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-matrix-green rounded-full flex items-center justify-center text-deep-space font-bold">2</div>
+                                <div>
+                                    <p class="font-semibold">Infrastructure Monitoring</p>
+                                    <p class="text-gray-400 text-sm">Grafana dashboards, alert triage, performance analysis</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-electric-purple rounded-full flex items-center justify-center text-deep-space font-bold">3</div>
+                                <div>
+                                    <p class="font-semibold">Code & Automation</p>
+                                    <p class="text-gray-400 text-sm">Terraform modules, Kubernetes manifests, CI/CD pipelines</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-cyber-blue rounded-full flex items-center justify-center text-deep-space font-bold">4</div>
+                                <div>
+                                    <p class="font-semibold">Architecture Planning</p>
+                                    <p class="text-gray-400 text-sm">System design, cost optimization, security reviews</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-matrix-green rounded-full flex items-center justify-center text-deep-space font-bold">5</div>
+                                <div>
+                                    <p class="font-semibold">Knowledge Sharing</p>
+                                    <p class="text-gray-400 text-sm">Documentation, mentoring, technical discussions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scroll-reveal">
+                    <div class="glassmorphism p-8 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl purple-glow mb-6">Personal Lab Environment</h4>
+                        <div class="space-y-4">
+                            <div class="bg-gray-800 p-4 rounded font-mono text-sm">
+                                <div class="text-green-400">$ kubectl config get-contexts</div>
+                                <div class="text-gray-300">
+                                    CURRENT   NAME           CLUSTER        AUTHINFO       NAMESPACE<br>
+                                    *         gke-lab-1      gke-lab-1      gke-lab-1      default<br>
+                                      gke-lab-2      gke-lab-2      gke-lab-2      monitoring<br>
+                                      gke-lab-3      gke-lab-3      gke-lab-3      security<br>
+                                      ... (10 clusters total)
+                                </div>
+                            </div>
+                            <p class="text-gray-300">
+                                Maintains a personal GKE lab with 10 clusters for experimentation, 
+                                learning, and testing new technologies before production adoption.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-6 text-center">
+            <div class="glassmorphism p-12 rounded-lg scroll-reveal">
+                <h3 class="text-3xl font-orbitron font-bold neon-text mb-6">Ready to Build Together?</h3>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    If my journey and philosophy resonate with your infrastructure challenges, 
+                    let's discuss how we can scale your systems beautifully.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="experience.html" class="bg-cyber-blue text-deep-space px-8 py-4 rounded-lg font-semibold hover:bg-opacity-80 transition-all duration-300">
+                        View My Experience
+                    </a>
+                    <a href="contact.html" class="border-2 border-matrix-green text-matrix-green px-8 py-4 rounded-lg font-semibold hover:bg-matrix-green hover:text-deep-space transition-all duration-300">
+                        Get In Touch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">
+                © 2025 Bandi Venkatesh. Built with DevOps excellence - containerized, monitored, and continuously delivered.
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize scroll animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.scroll-reveal, .timeline-item').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Initialize 3D skill globe
+            initSkillGlobe();
+        });
+        
+        function initSkillGlobe() {
+            const globeContainer = document.getElementById('skillGlobe');
+            if (!globeContainer) return;
+            
+            // Create basic Three.js scene
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, globeContainer.clientWidth / globeContainer.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true });
+            
+            renderer.setSize(globeContainer.clientWidth, globeContainer.clientHeight);
+            globeContainer.appendChild(renderer.domElement);
+            
+            // Create sphere with skill nodes
+            const geometry = new THREE.SphereGeometry(5, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x00F5FF, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            });
+            const sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+            
+            // Add skill nodes
+            const skills = [
+                { name: 'Kubernetes', color: 0x00F5FF, position: [6, 0, 0] },
+                { name: 'GCP', color: 0x39FF14, position: [0, 6, 0] },
+                { name: 'Terraform', color: 0xBC13FE, position: [0, 0, 6] },
+                { name: 'DevOps', color: 0x00F5FF, position: [-6, 0, 0] },
+                { name: 'Cloud', color: 0x39FF14, position: [0, -6, 0] },
+                { name: 'Security', color: 0xBC13FE, position: [0, 0, -6] }
+            ];
+            
+            skills.forEach(skill => {
+                const nodeGeometry = new THREE.OctahedronGeometry(0.5);
+                const nodeMaterial = new THREE.MeshBasicMaterial({ 
+                    color: skill.color,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+                node.position.set(...skill.position);
+                scene.add(node);
+            });
+            
+            camera.position.z = 15;
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                sphere.rotation.x += 0.01;
+                sphere.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+    </script>
+    
+    <script src="main.js"></script>
+</body>
+</html>

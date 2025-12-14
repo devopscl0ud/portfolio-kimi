@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Bandi Venkatesh | Let's Build Together</title>
+    <meta name="description" content="Ready to transform your infrastructure? Get in touch to discuss DevOps consulting, infrastructure architecture, and cloud transformation projects.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00F5FF',
+                        'matrix-green': '#39FF14',
+                        'electric-purple': '#BC13FE',
+                        'deep-space': '#0A0A0A',
+                        'aurora-white': '#F8F8FF'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glassmorphism {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        
+        .neon-text {
+            color: #00F5FF;
+            text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
+        }
+        
+        .matrix-text {
+            color: #39FF14;
+            text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
+        }
+        
+        .purple-glow {
+            color: #BC13FE;
+            text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .contact-form {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-form:hover {
+            border-color: #00F5FF;
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2);
+        }
+        
+        .form-input {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            color: #F8F8FF;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #00F5FF;
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: #9CA3AF;
+        }
+        
+        .availability-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .availability-indicator.available {
+            background: rgba(57, 255, 20, 0.2);
+            color: #39FF14;
+            border: 1px solid rgba(57, 255, 20, 0.3);
+        }
+        
+        .availability-indicator.busy {
+            background: rgba(255, 165, 0, 0.2);
+            color: #FFA500;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+        
+        .social-link {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            border-color: #00F5FF;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 245, 255, 0.2);
+        }
+        
+        .role-preference {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .role-preference:hover {
+            border-color: #00F5FF;
+            background: rgba(0, 245, 255, 0.1);
+        }
+        
+        .role-preference.selected {
+            border-color: #00F5FF;
+            background: rgba(0, 245, 255, 0.2);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #00F5FF, #39FF14);
+            color: #0A0A0A;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.4);
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+        
+        .rocket-animation {
+            animation: launch 2s ease-in-out infinite;
+        }
+        
+        @keyframes launch {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
+    <!-- Particle Background -->
+    <div class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="./resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin">
+                    <div>
+                        <h1 class="font-orbitron font-bold text-xl neon-text">Bandi Venkatesh</h1>
+                        <p class="text-sm text-gray-400">Principal DevOps Engineer</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-cyber-blue transition-colors duration-300">Home</a>
+                    <a href="about.html" class="hover:text-cyber-blue transition-colors duration-300">About</a>
+                    <a href="skills.html" class="hover:text-cyber-blue transition-colors duration-300">Skills</a>
+                    <a href="experience.html" class="hover:text-cyber-blue transition-colors duration-300">Experience</a>
+                    <a href="projects.html" class="hover:text-cyber-blue transition-colors duration-300">Projects</a>
+                    <a href="#contact" class="text-cyber-blue">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="contact" class="pt-32 pb-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="font-orbitron font-black text-5xl lg:text-6xl mb-6">
+                    <span class="neon-text">Let's Build</span> <span class="matrix-text">Together</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Ready to transform your infrastructure? Let's discuss how we can scale your systems, 
+                    optimize costs, and build the foundation for your next million users.
+                </p>
+            </div>
+            
+            <!-- Availability Status -->
+            <div class="text-center mb-12 scroll-reveal">
+                <div class="availability-indicator available">
+                    <span class="w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                    Available for Senior/Lead DevOps Roles
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Form -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="scroll-reveal">
+                    <div class="contact-form p-8 rounded-lg">
+                        <h3 class="font-orbitron font-bold text-2xl neon-text mb-8">Start the Conversation</h3>
+                        
+                        <form id="contact-form" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-300 mb-2 font-semibold">Name *</label>
+                                    <input type="text" name="name" required class="form-input w-full" placeholder="Your full name">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 font-semibold">Email *</label>
+                                    <input type="email" name="email" required class="form-input w-full" placeholder="your.email@company.com">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Company</label>
+                                <input type="text" name="company" class="form-input w-full" placeholder="Your company name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Role/Title</label>
+                                <input type="text" name="role" class="form-input w-full" placeholder="e.g., CTO, VP Engineering, DevOps Manager">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Project Type</label>
+                                <select name="project-type" class="form-input w-full">
+                                    <option value="">Select project type</option>
+                                    <option value="infrastructure-audit">Infrastructure Audit</option>
+                                    <option value="cloud-migration">Cloud Migration</option>
+                                    <option value="kubernetes-setup">Kubernetes Setup</option>
+                                    <option value="devops-transformation">DevOps Transformation</option>
+                                    <option value="cost-optimization">Cost Optimization</option>
+                                    <option value="security-review">Security Review</option>
+                                    <option value="full-time-role">Full-time Role</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Message *</label>
+                                <textarea name="message" required rows="6" class="form-input w-full" placeholder="Tell me about your infrastructure challenges, goals, or how I can help..."></textarea>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" id="newsletter" name="newsletter" class="w-4 h-4 text-cyber-blue bg-gray-800 border-gray-600 rounded focus:ring-cyber-blue">
+                                <label for="newsletter" class="text-gray-300">Subscribe to infrastructure insights and updates</label>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn w-full">
+                                <span class="rocket-animation">🚀</span>
+                                Send Message & Start Building
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="space-y-8 scroll-reveal">
+                    <!-- Role Preferences -->
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h3 class="font-orbitron font-bold text-xl matrix-text mb-6">Role Preferences</h3>
+                        <div class="space-y-4">
+                            <div class="role-preference" onclick="toggleRole(this)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-cyber-blue">Principal DevOps Engineer</h4>
+                                        <p class="text-gray-400 text-sm">Hands-on technical leadership</p>
+                                    </div>
+                                    <span class="text-gray-400">✓</span>
+                                </div>
+                            </div>
+                            <div class="role-preference" onclick="toggleRole(this)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-matrix-green">DevOps Lead / Manager</h4>
+                                        <p class="text-gray-400 text-sm">Team leadership and strategy</p>
+                                    </div>
+                                    <span class="text-gray-400">✓</span>
+                                </div>
+                            </div>
+                            <div class="role-preference" onclick="toggleRole(this)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-purple-glow">Site Reliability Engineer</h4>
+                                        <p class="text-gray-400 text-sm">Focus on reliability and performance</p>
+                                    </div>
+                                    <span class="text-gray-400">✓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Work Preferences -->
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h3 class="font-orbitron font-bold text-xl purple-glow mb-6">Work Preferences</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" id="remote" class="w-4 h-4 text-cyber-blue bg-gray-800 border-gray-600 rounded focus:ring-cyber-blue">
+                                <label for="remote" class="text-gray-300">Remote Work</label>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" id="hybrid" class="w-4 h-4 text-cyber-blue bg-gray-800 border-gray-600 rounded focus:ring-cyber-blue">
+                                <label for="hybrid" class="text-gray-300">Hybrid Model</label>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" id="hyderabad" class="w-4 h-4 text-cyber-blue bg-gray-800 border-gray-600 rounded focus:ring-cyber-blue">
+                                <label for="hyderabad" class="text-gray-300">Hyderabad Office</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h3 class="font-orbitron font-bold text-xl neon-text mb-6">Connect With Me</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="social-link">
+                                <div class="text-2xl mb-2">💼</div>
+                                <h4 class="font-semibold text-cyber-blue">LinkedIn</h4>
+                                <p class="text-gray-400 text-sm">Professional Network</p>
+                                <p class="text-xs text-gray-500 mt-1">1.2K+ connections</p>
+                            </div>
+                            <div class="social-link">
+                                <div class="text-2xl mb-2">🐙</div>
+                                <h4 class="font-semibold text-matrix-green">GitHub</h4>
+                                <p class="text-gray-400 text-sm">Open Source</p>
+                                <p class="text-xs text-gray-500 mt-1">500+ contributions</p>
+                            </div>
+                            <div class="social-link">
+                                <div class="text-2xl mb-2">📝</div>
+                                <h4 class="font-semibold text-purple-glow">Medium</h4>
+                                <p class="text-gray-400 text-sm">Technical Articles</p>
+                                <p class="text-xs text-gray-500 mt-1">5K+ followers</p>
+                            </div>
+                            <div class="social-link">
+                                <div class="text-2xl mb-2">🐦</div>
+                                <h4 class="font-semibold text-cyber-blue">Twitter</h4>
+                                <p class="text-gray-400 text-sm">DevOps Insights</p>
+                                <p class="text-xs text-gray-500 mt-1">2K+ followers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-6 text-center">
+            <div class="glassmorphism p-12 rounded-lg scroll-reveal">
+                <h3 class="text-3xl font-orbitron font-bold neon-text mb-6">Ready to Launch?</h3>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    Every great infrastructure starts with a conversation. Let's discuss your challenges 
+                    and build something extraordinary together.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="dashboard.html" class="bg-cyber-blue text-deep-space px-8 py-4 rounded-lg font-semibold hover:bg-opacity-80 transition-all duration-300">
+                        View Live Dashboard
+                    </a>
+                    <a href="#contact-form" class="border-2 border-matrix-green text-matrix-green px-8 py-4 rounded-lg font-semibold hover:bg-matrix-green hover:text-deep-space transition-all duration-300">
+                        Send Message
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">
+                © 2025 Bandi Venkatesh. Built with DevOps excellence - containerized, monitored, and continuously delivered.
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                Response time: Usually within 24 hours. For urgent matters, mention in the message.
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Form handling
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeForm();
+            initializeScrollAnimations();
+        });
+        
+        function initializeForm() {
+            const form = document.getElementById('contact-form');
+            form.addEventListener('submit', handleFormSubmit);
+        }
+        
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Show success animation
+            const submitBtn = e.target.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<span>✅</span> Message Sent Successfully!';
+            submitBtn.style.background = 'linear-gradient(45deg, #39FF14, #00F5FF)';
+            
+            // Simulate form processing
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.style.background = 'linear-gradient(45deg, #00F5FF, #39FF14)';
+                
+                // Reset form
+                e.target.reset();
+                
+                // Show success message
+                showSuccessMessage();
+            }, 2000);
+        }
+        
+        function showSuccessMessage() {
+            const message = document.createElement('div');
+            message.className = 'fixed top-24 right-6 bg-matrix-green text-deep-space p-4 rounded-lg shadow-lg z-50';
+            message.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">🚀</span>
+                    <div>
+                        <p class="font-semibold">Message Sent!</p>
+                        <p class="text-sm opacity-80">I'll get back to you within 24 hours</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+        
+        function toggleRole(element) {
+            element.classList.toggle('selected');
+        }
+        
+        function initializeScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+    </script>
+    
+    <script src="main.js"></script>
+</body>
+</html>

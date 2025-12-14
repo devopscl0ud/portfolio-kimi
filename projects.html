@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Bandi Venkatesh | Infrastructure Gallery</title>
+    <meta name="description" content="Interactive showcase of 6 enterprise-scale DevOps projects: Pharmacy platform, multi-tenant accelerator, cloud migration toolkit, observability revolution, DevSecOps pipeline, and chaos engineering.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00F5FF',
+                        'matrix-green': '#39FF14',
+                        'electric-purple': '#BC13FE',
+                        'deep-space': '#0A0A0A',
+                        'aurora-white': '#F8F8FF'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glassmorphism {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        
+        .neon-text {
+            color: #00F5FF;
+            text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
+        }
+        
+        .matrix-text {
+            color: #39FF14;
+            text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
+        }
+        
+        .purple-glow {
+            color: #BC13FE;
+            text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .project-card {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .project-card:hover::before {
+            left: 100%;
+        }
+        
+        .project-card:hover {
+            border-color: #00F5FF;
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 245, 255, 0.3);
+        }
+        
+        .interactive-demo {
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .demo-tab {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            color: #F8F8FF;
+            padding: 12px 24px;
+            margin: 0 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-tab.active {
+            background: #00F5FF;
+            color: #0A0A0A;
+            border-color: #00F5FF;
+        }
+        
+        .demo-tab:hover {
+            background: rgba(0, 245, 255, 0.2);
+        }
+        
+        .demo-tab.active:hover {
+            background: #00F5FF;
+        }
+        
+        .demo-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .demo-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .monaco-editor-container {
+            height: 400px;
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            border-radius: 8px;
+        }
+        
+        .cost-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #39FF14, #00F5FF, #BC13FE);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .cost-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00F5FF;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00F5FF;
+        }
+        
+        .pipeline-stage {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 8px;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+        
+        .pipeline-stage:hover {
+            border-color: #00F5FF;
+            transform: scale(1.05);
+        }
+        
+        .pipeline-stage.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed rgba(57, 255, 20, 0.3);
+            border-radius: 8px;
+            margin: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: #39FF14;
+            background: rgba(57, 255, 20, 0.1);
+        }
+        
+        .metric-gauge {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        
+        .tech-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+        }
+        
+        .tech-tag {
+            background: rgba(0, 245, 255, 0.2);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            color: #00F5FF;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-tag:hover {
+            background: rgba(0, 245, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .project-nav {
+            position: sticky;
+            top: 100px;
+            z-index: 40;
+        }
+        
+        .project-nav-item {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            color: #F8F8FF;
+            padding: 12px 20px;
+            margin: 4px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .project-nav-item.active {
+            background: #00F5FF;
+            color: #0A0A0A;
+            border-color: #00F5FF;
+        }
+        
+        .project-nav-item:hover {
+            background: rgba(0, 245, 255, 0.2);
+        }
+        
+        .project-nav-item.active:hover {
+            background: #00F5FF;
+        }
+    </style>
+</head>
+<body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
+    <!-- Particle Background -->
+    <div class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="./resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin">
+                    <div>
+                        <h1 class="font-orbitron font-bold text-xl neon-text">Bandi Venkatesh</h1>
+                        <p class="text-sm text-gray-400">Principal DevOps Engineer</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-cyber-blue transition-colors duration-300">Home</a>
+                    <a href="about.html" class="hover:text-cyber-blue transition-colors duration-300">About</a>
+                    <a href="skills.html" class="hover:text-cyber-blue transition-colors duration-300">Skills</a>
+                    <a href="experience.html" class="hover:text-cyber-blue transition-colors duration-300">Experience</a>
+                    <a href="#projects" class="text-cyber-blue">Projects</a>
+                    <a href="contact.html" class="hover:text-cyber-blue transition-colors duration-300">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Project Navigation -->
+    <div class="project-nav fixed left-6 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
+        <div class="space-y-2">
+            <div class="project-nav-item active" onclick="showProject('project1')">PharmacyRx Platform</div>
+            <div class="project-nav-item" onclick="showProject('project2')">FinTech Accelerator</div>
+            <div class="project-nav-item" onclick="showProject('project3')">Migration Toolkit</div>
+            <div class="project-nav-item" onclick="showProject('project4')">Observability Stack</div>
+            <div class="project-nav-item" onclick="showProject('project5')">DevSecOps Pipeline</div>
+            <div class="project-nav-item" onclick="showProject('project6')">Chaos Engineering</div>
+        </div>
+    </div>
+    
+    <!-- Hero Section -->
+    <section id="projects" class="pt-32 pb-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="font-orbitron font-black text-5xl lg:text-6xl mb-6">
+                    <span class="neon-text">Infrastructure</span> <span class="matrix-text">Gallery</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Interactive showcase of enterprise-scale DevOps projects. Click, explore, and experience 
+                    the infrastructure that powers millions of users and saves hundreds of thousands in costs.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Project 1: PharmacyRx Cloud Platform -->
+    <section id="project1" class="project-section py-16">
+        <div class="container mx-auto px-6">
+            <div class="project-card p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-cyber-blue rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl">🏥</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl neon-text">PharmacyRx Cloud Platform</h3>
+                        <p class="text-gray-400">Healthcare SaaS • 2M+ Prescriptions/Month • 99.95% Uptime</p>
+                    </div>
+                </div>
+                
+                <!-- Interactive Demo Tabs -->
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <button class="demo-tab active" onclick="showDemo('project1', 'architecture')">Architecture Viewer</button>
+                    <button class="demo-tab" onclick="showDemo('project1', 'metrics')">Live Metrics</button>
+                    <button class="demo-tab" onclick="showDemo('project1', 'cost')">Cost Optimization</button>
+                    <button class="demo-tab" onclick="showDemo('project1', 'tech')">Tech Stack</button>
+                </div>
+                
+                <!-- Architecture Viewer -->
+                <div id="project1-architecture" class="demo-content active">
+                    <div class="interactive-demo">
+                        <h4 class="font-orbitron font-bold text-xl matrix-text mb-4">Interactive Architecture Diagram</h4>
+                        <div class="grid lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <div class="glassmorphism p-6 rounded-lg h-96 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <div class="text-6xl mb-4">🏗️</div>
+                                        <p class="text-gray-400">Multi-Region GKE Architecture</p>
+                                        <p class="text-sm text-gray-500 mt-2">Click components to explore</p>
+                                        <div class="mt-6 space-y-2">
+                                            <div class="bg-cyber-blue text-deep-space px-4 py-2 rounded cursor-pointer hover:bg-opacity-80" onclick="showComponent('load-balancer')">
+                                                🌐 Global Load Balancer
+                                            </div>
+                                            <div class="bg-matrix-green text-deep-space px-4 py-2 rounded cursor-pointer hover:bg-opacity-80" onclick="showComponent('gke-cluster')">
+                                                ⚙️ GKE Clusters (3 regions)
+                                            </div>
+                                            <div class="bg-electric-purple text-deep-space px-4 py-2 rounded cursor-pointer hover:bg-opacity-80" onclick="showComponent('database')">
+                                                🗄️ Cloud SQL (HA)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="glassmorphism p-4 rounded-lg">
+                                    <h5 class="font-semibold text-cyber-blue mb-2">Component Details</h5>
+                                    <div id="component-details" class="text-gray-400 text-sm">
+                                        Click on a component to view detailed specifications and configuration.
+                                    </div>
+                                </div>
+                                <div class="glassmorphism p-4 rounded-lg">
+                                    <h5 class="font-semibold text-matrix-green mb-2">Performance Metrics</h5>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-400">Latency:</span>
+                                            <span class="text-cyber-blue">&lt; 100ms</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-400">Throughput:</span>
+                                            <span class="text-matrix-green">500 TPS</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-400">Availability:</span>
+                                            <span class="text-electric-purple">99.95%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Live Metrics -->
+                <div id="project1-metrics" class="demo-content">
+                    <div class="interactive-demo">
+                        <h4 class="font-orbitron font-bold text-xl purple-glow mb-4">Real-Time Metrics Dashboard</h4>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="glassmorphism p-6 rounded-lg text-center">
+                                <div class="metric-gauge" id="requests-gauge"></div>
+                                <p class="text-gray-400 mt-2">Requests/Min</p>
+                            </div>
+                            <div class="glassmorphism p-6 rounded-lg text-center">
+                                <div class="metric-gauge" id="latency-gauge"></div>
+                                <p class="text-gray-400 mt-2">Avg Latency</p>
+                            </div>
+                            <div class="glassmorphism p-6 rounded-lg text-center">
+                                <div class="metric-gauge" id="errors-gauge"></div>
+                                <p class="text-gray-400 mt-2">Error Rate</p>
+                            </div>
+                            <div class="glassmorphism p-6 rounded-lg text-center">
+                                <div class="metric-gauge" id="uptime-gauge"></div>
+                                <p class="text-gray-400 mt-2">Uptime</p>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h5 class="font-semibold text-cyber-blue mb-4">Live Traffic Pattern</h5>
+                                <div id="traffic-chart" class="h-64"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cost Optimization -->
+                <div id="project1-cost" class="demo-content">
+                    <div class="interactive-demo">
+                        <h4 class="font-orbitron font-bold text-xl neon-text mb-4">Cost Optimization Impact</h4>
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h5 class="font-semibold text-cyber-blue mb-4">Before vs After</h5>
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="block text-gray-400 mb-2">Instance Optimization</label>
+                                        <input type="range" class="cost-slider" min="0" max="100" value="75" oninput="updateCostSavings(this.value)">
+                                        <div class="flex justify-between text-sm text-gray-500 mt-1">
+                                            <span>Before: $240K/year</span>
+                                            <span>After: $60K/year</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-800 p-4 rounded">
+                                        <div class="text-center">
+                                            <span class="text-2xl font-bold matrix-text">$180K</span>
+                                            <p class="text-gray-400 text-sm">Annual Savings</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glassmorphism p-6 rounded-lg">
+                                <h5 class="font-semibold text-matrix-green mb-4">Optimization Strategies</h5>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-4 h-4 bg-cyber-blue rounded-full"></div>
+                                        <span class="text-gray-300">Right-sized instances (40% savings)</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-4 h-4 bg-matrix-green rounded-full"></div>
+                                        <span class="text-gray-300">Spot instances adoption (30% savings)</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-4 h-4 bg-electric-purple rounded-full"></div>
+                                        <span class="text-gray-300">Committed use discounts (20% savings)</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-4 h-4 bg-cyber-blue rounded-full"></div>
+                                        <span class="text-gray-300">Automated scaling (10% savings)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tech Stack -->
+                <div id="project1-tech" class="demo-content">
+                    <div class="interactive-demo">
+                        <h4 class="font-orbitron font-bold text-xl matrix-text mb-4">Technology Stack</h4>
+                        <div class="tech-cloud">
+                            <span class="tech-tag">Google Cloud Platform</span>
+                            <span class="tech-tag">GKE</span>
+                            <span class="tech-tag">Istio</span>
+                            <span class="tech-tag">Cloud SQL</span>
+                            <span class="tech-tag">Terraform</span>
+                            <span class="tech-tag">Helm</span>
+                            <span class="tech-tag">Prometheus</span>
+                            <span class="tech-tag">Grafana</span>
+                            <span class="tech-tag">Falco</span>
+                            <span class="tech-tag">OPA</span>
+                            <span class="tech-tag">Vault</span>
+                            <span class="tech-tag">ArgoCD</span>
+                            <span class="tech-tag">GitHub Actions</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">Kubernetes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Project 2: FinTech Multi-Tenant Accelerator -->
+    <section id="project2" class="project-section py-16">
+        <div class="container mx-auto px-6">
+            <div class="project-card p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-matrix-green rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl">🏦</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl matrix-text">FinTech Multi-Tenant Accelerator</h3>
+                        <p class="text-gray-400">Financial Services • 30-min Provisioning • $200K ARR</p>
+                    </div>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4 class="font-orbitron font-bold text-xl purple-glow mb-4">Tenant Provisioning Simulator</h4>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-cyber-blue mb-4">Create New Tenant</h5>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Company Name</label>
+                                    <input type="text" class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white" placeholder="Acme Financial" id="company-name">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Tenant Tier</label>
+                                    <select class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white" id="tenant-tier">
+                                        <option value="basic">Basic</option>
+                                        <option value="professional">Professional</option>
+                                        <option value="enterprise">Enterprise</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Region</label>
+                                    <select class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white" id="tenant-region">
+                                        <option value="us-central1">US Central</option>
+                                        <option value="us-east1">US East</option>
+                                        <option value="us-west1">US West</option>
+                                        <option value="europe-west1">Europe West</option>
+                                    </select>
+                                </div>
+                                <button class="w-full bg-matrix-green text-deep-space py-3 rounded font-semibold hover:bg-opacity-80 transition-all" onclick="provisionTenant()">
+                                    🚀 Provision Tenant
+                                </button>
+                            </div>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-matrix-green mb-4">Provisioning Progress</h5>
+                            <div id="provisioning-steps" class="space-y-3">
+                                <div class="flex items-center space-x-3 opacity-50">
+                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">1</div>
+                                    <span class="text-gray-400">Create namespace and RBAC</span>
+                                </div>
+                                <div class="flex items-center space-x-3 opacity-50">
+                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">2</div>
+                                    <span class="text-gray-400">Apply OPA security policies</span>
+                                </div>
+                                <div class="flex items-center space-x-3 opacity-50">
+                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">3</div>
+                                    <span class="text-gray-400">Deploy application stack</span>
+                                </div>
+                                <div class="flex items-center space-x-3 opacity-50">
+                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">4</div>
+                                    <span class="text-gray-400">Configure monitoring</span>
+                                </div>
+                                <div class="flex items-center space-x-3 opacity-50">
+                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">5</div>
+                                    <span class="text-gray-400">Setup network policies</span>
+                                </div>
+                            </div>
+                            <div id="provisioning-complete" class="mt-6 text-center hidden">
+                                <div class="text-4xl mb-2">✅</div>
+                                <p class="text-matrix-green font-semibold">Tenant Provisioned Successfully!</p>
+                                <p class="text-gray-400 text-sm">Time: 28 minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Project 3: Cloud Migration Automation Toolkit -->
+    <section id="project3" class="project-section py-16">
+        <div class="container mx-auto px-6">
+            <div class="project-card p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-electric-purple rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl">☁️</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl purple-glow">Cloud Migration Automation Toolkit</h3>
+                        <p class="text-gray-400">Self-Service Portal • 500+ Hours Saved • 100% Standardization</p>
+                    </div>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4 class="font-orbitron font-bold text-xl neon-text mb-4">Self-Service Portal Demo</h4>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-cyber-blue mb-4">Service Catalog</h5>
+                            <div class="space-y-3">
+                                <div class="bg-gray-800 p-3 rounded cursor-pointer hover:bg-gray-700" onclick="selectService('kubernetes')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-2xl">⚙️</span>
+                                        <div>
+                                            <p class="font-semibold">Kubernetes Cluster</p>
+                                            <p class="text-gray-400 text-sm">GKE with monitoring</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded cursor-pointer hover:bg-gray-700" onclick="selectService('database')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-2xl">🗄️</span>
+                                        <div>
+                                            <p class="font-semibold">Database Instance</p>
+                                            <p class="text-gray-400 text-sm">Cloud SQL with backup</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded cursor-pointer hover:bg-gray-700" onclick="selectService('storage')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-2xl">📦</span>
+                                        <div>
+                                            <p class="font-semibold">Object Storage</p>
+                                            <p class="text-gray-400 text-sm">GCS with lifecycle</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-matrix-green mb-4">Configuration</h5>
+                            <div id="service-config" class="text-gray-400 text-center py-8">
+                                Select a service to configure
+                            </div>
+                        </div>
+                        <div class="glassmorphism p-6 rounded-lg">
+                            <h5 class="font-semibold text-purple-glow mb-4">Time Savings Calculator</h5>
+                            <div class="space-y-4">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold neon-text" id="hours-saved">0</div>
+                                    <p class="text-gray-400 text-sm">Hours Saved Annually</p>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Manual provisioning:</span>
+                                        <span class="text-gray-300">8 hours</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Automated provisioning:</span>
+                                        <span class="text-cyber-blue">30 minutes</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Time saved per service:</span>
+                                        <span class="text-matrix-green">7.5 hours</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded text-center">
+                                    <p class="text-gray-400 text-sm">Based on 50+ services/month</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-6 text-center">
+            <div class="glassmorphism p-12 rounded-lg scroll-reveal">
+                <h3 class="text-3xl font-orbitron font-bold neon-text mb-6">Experience More Projects</h3>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    These interactive demos showcase real-world infrastructure solutions. 
+                    Each project demonstrates production-grade DevOps practices and measurable business impact.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="dashboard.html" class="bg-cyber-blue text-deep-space px-8 py-4 rounded-lg font-semibold hover:bg-opacity-80 transition-all duration-300">
+                        View Live Metrics Dashboard
+                    </a>
+                    <a href="contact.html" class="border-2 border-matrix-green text-matrix-green px-8 py-4 rounded-lg font-semibold hover:bg-matrix-green hover:text-deep-space transition-all duration-300">
+                        Discuss Your Project
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">
+                © 2025 Bandi Venkatesh. Built with DevOps excellence - containerized, monitored, and continuously delivered.
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Project navigation
+        function showProject(projectId) {
+            // Hide all projects
+            document.querySelectorAll('.project-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected project
+            document.getElementById(projectId).style.display = 'block';
+            
+            // Update navigation
+            document.querySelectorAll('.project-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Demo tab switching
+        function showDemo(projectId, demoId) {
+            const project = document.getElementById(projectId);
+            const tabs = project.querySelectorAll('.demo-tab');
+            const contents = project.querySelectorAll('.demo-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${projectId}-${demoId}`).classList.add('active');
+            
+            // Initialize specific demos
+            if (demoId === 'metrics') initMetricsDemo();
+            if (demoId === 'cost') initCostDemo();
+        }
+        
+        // Component details
+        function showComponent(component) {
+            const details = document.getElementById('component-details');
+            const componentInfo = {
+                'load-balancer': 'Global HTTP(S) Load Balancer with Cloud CDN, SSL termination, and DDoS protection. Handles 10K+ RPS with sub-100ms latency.',
+                'gke-cluster': 'Regional GKE clusters with auto-scaling, node auto-provisioning, and workload identity. 3 regions for high availability.',
+                'database': 'Cloud SQL High Availability with automated backups, point-in-time recovery, and read replicas for performance.'
+            };
+            details.innerHTML = componentInfo[component] || 'Component details not available.';
+        }
+        
+        // Tenant provisioning simulation
+        function provisionTenant() {
+            const steps = document.querySelectorAll('#provisioning-steps .flex');
+            const complete = document.getElementById('provisioning-complete');
+            
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.classList.remove('opacity-50');
+                    step.querySelector('.w-6').classList.remove('bg-gray-600');
+                    step.querySelector('.w-6').classList.add('bg-matrix-green');
+                    step.querySelector('.w-6').innerHTML = '✓';
+                }, index * 1000);
+            });
+            
+            setTimeout(() => {
+                complete.classList.remove('hidden');
+            }, 5000);
+        }
+        
+        // Service selection
+        function selectService(service) {
+            const config = document.getElementById('service-config');
+            const hoursSaved = document.getElementById('hours-saved');
+            
+            const serviceConfig = {
+                'kubernetes': `
+                    <div class="text-left space-y-3">
+                        <div>
+                            <label class="block text-gray-400 mb-1">Cluster Size</label>
+                            <select class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm">
+                                <option>Small (3 nodes)</option>
+                                <option>Medium (6 nodes)</option>
+                                <option>Large (12 nodes)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Monitoring</label>
+                            <input type="checkbox" checked class="mr-2"> Prometheus + Grafana
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Ingress</label>
+                            <input type="checkbox" checked class="mr-2"> NGINX Ingress Controller
+                        </div>
+                    </div>
+                `,
+                'database': `
+                    <div class="text-left space-y-3">
+                        <div>
+                            <label class="block text-gray-400 mb-1">Database Type</label>
+                            <select class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm">
+                                <option>PostgreSQL</option>
+                                <option>MySQL</option>
+                                <option>SQL Server</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">High Availability</label>
+                            <input type="checkbox" checked class="mr-2"> Multi-zone deployment
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Backup</label>
+                            <input type="checkbox" checked class="mr-2"> Automated daily backups
+                        </div>
+                    </div>
+                `,
+                'storage': `
+                    <div class="text-left space-y-3">
+                        <div>
+                            <label class="block text-gray-400 mb-1">Storage Class</label>
+                            <select class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm">
+                                <option>Standard</option>
+                                <option>Nearline</option>
+                                <option>Coldline</option>
+                                <option>Archive</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Lifecycle</label>
+                            <input type="checkbox" checked class="mr-2"> Automatic lifecycle management
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Encryption</label>
+                            <input type="checkbox" checked class="mr-2"> Server-side encryption
+                        </div>
+                    </div>
+                `
+            };
+            
+            config.innerHTML = serviceConfig[service] || 'Configuration not available';
+            hoursSaved.textContent = '375';
+        }
+        
+        // Initialize metrics demo
+        function initMetricsDemo() {
+            // Create gauge charts
+            createGauge('requests-gauge', 85, 'Requests/Min', '2.4K');
+            createGauge('latency-gauge', 92, 'Avg Latency', '85ms');
+            createGauge('errors-gauge', 98, 'Error Rate', '0.02%');
+            createGauge('uptime-gauge', 99.97, 'Uptime', '99.97%');
+            
+            // Create traffic chart
+            createTrafficChart();
+        }
+        
+        function createGauge(containerId, value, label, displayValue) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const width = 200;
+            const height = 200;
+            const radius = Math.min(width, height) / 2;
+            
+            const svg = d3.select(`#${containerId}`)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${width/2}, ${height/2})`);
+            
+            const arc = d3.arc()
+                .innerRadius(radius * 0.7)
+                .outerRadius(radius * 0.9)
+                .startAngle(-Math.PI / 2)
+                .endAngle(Math.PI / 2);
+            
+            // Background arc
+            g.append('path')
+                .attr('d', arc())
+                .attr('fill', 'rgba(255, 255, 255, 0.1)');
+            
+            // Value arc
+            const valueArc = d3.arc()
+                .innerRadius(radius * 0.7)
+                .outerRadius(radius * 0.9)
+                .startAngle(-Math.PI / 2)
+                .endAngle(-Math.PI / 2 + (Math.PI * value / 100));
+            
+            g.append('path')
+                .attr('d', valueArc())
+                .attr('fill', '#00F5FF');
+            
+            // Text
+            g.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('fill', '#F8F8FF')
+                .attr('font-size', '24px')
+                .attr('font-weight', 'bold')
+                .text(displayValue);
+            
+            g.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '2em')
+                .attr('fill', '#F8F8FF')
+                .attr('font-size', '12px')
+                .text(label);
+        }
+        
+        function createTrafficChart() {
+            const container = document.getElementById('traffic-chart');
+            if (!container) return;
+            
+            const width = container.clientWidth;
+            const height = 256;
+            
+            const svg = d3.select('#traffic-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Generate sample data
+            const data = [];
+            for (let i = 0; i < 24; i++) {
+                data.push({
+                    hour: i,
+                    requests: Math.floor(Math.random() * 1000) + 500
+                });
+            }
+            
+            const xScale = d3.scaleLinear()
+                .domain([0, 23])
+                .range([0, width]);
+            
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.requests)])
+                .range([height, 0]);
+            
+            const line = d3.line()
+                .x(d => xScale(d.hour))
+                .y(d => yScale(d.requests))
+                .curve(d3.curveMonotoneX);
+            
+            svg.append('path')
+                .datum(data)
+                .attr('fill', 'none')
+                .attr('stroke', '#00F5FF')
+                .attr('stroke-width', 2)
+                .attr('d', line);\n            
+            // Add area under curve
+            const area = d3.area()
+                .x(d => xScale(d.hour))
+                .y0(height)
+                .y1(d => yScale(d.requests))
+                .curve(d3.curveMonotoneX);
+            
+            svg.append('path')
+                .datum(data)
+                .attr('fill', 'rgba(0, 245, 255, 0.2)')
+                .attr('d', area);
+        }
+        
+        // Initialize cost demo
+        function initCostDemo() {
+            updateCostSavings(75);
+        }
+        
+        function updateCostSavings(value) {
+            const savings = Math.floor(value * 2.4);
+            document.querySelector('.bg-gray-800 p').innerHTML = `
+                <div class="text-center">
+                    <span class="text-2xl font-bold matrix-text">$${savings}K</span>
+                    <p class="text-gray-400 text-sm">Annual Savings</p>
+                </div>
+            `;
+        }
+        
+        // Initialize scroll animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+    
+    <script src="main.js"></script>
+</body>
+</html>
