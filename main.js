@@ -9,6 +9,9 @@ class DevOpsPortfolio {
         this.particles = null;
         this.kubernetesNodes = [];
         this.terminalHistory = [];
+        this.mockData = null;
+        this.xtermTerminal = null;
+        this.chatbotActive = false;
         this.terminalCommands = {
             'kubectl get nodes': this.getKubectlNodes,
             'kubectl get pods': this.getKubectlPods,
@@ -31,7 +34,9 @@ class DevOpsPortfolio {
     }
     
     init() {
-        this.setupParticleBackground();
+        // Load mock data
+        this.loadMockData();
+        
         this.setupScrollAnimations();
         this.setupMetricCounters();
         this.setupTerminal();
@@ -39,128 +44,28 @@ class DevOpsPortfolio {
         this.setupNavigation();
         this.setupMarquee();
         this.setupKubernetesVisualization();
+        this.setupChatbot();
+        this.setupXTerminal();
+        this.setup3DCube();
         
         // Initialize GSAP
         if (typeof gsap !== 'undefined') {
             gsap.registerPlugin(ScrollTrigger);
         }
     }
-    
-    // Particle Background with Three.js
-    setupParticleBackground() {
-        const canvas = document.getElementById('particleCanvas');
-        if (!canvas) return;
-        
-        // Create scene
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(0x000000, 0);
-        canvas.appendChild(this.renderer.domElement);
-        
-        // Create particle system
-        const particleGeometry = new THREE.BufferGeometry();
-        const particleCount = 1000;
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-        
-        for (let i = 0; i < particleCount * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 100;
-            positions[i + 1] = (Math.random() - 0.5) * 100;
-            positions[i + 2] = (Math.random() - 0.5) * 100;
-            
-            // Cyberpunk colors
-            const color = new THREE.Color();
-            const colorChoice = Math.random();
-            if (colorChoice < 0.4) {
-                color.setHex(0x00F5FF); // Cyber blue
-            } else if (colorChoice < 0.7) {
-                color.setHex(0x39FF14); // Matrix green
-            } else {
-                color.setHex(0xBC13FE); // Electric purple
-            }
-            
-            colors[i] = color.r;
-            colors[i + 1] = color.g;
-            colors[i + 2] = color.b;
-        }
-        
-        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        
-        const particleMaterial = new THREE.PointsMaterial({
-            size: 2,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
-        
-        this.particles = new THREE.Points(particleGeometry, particleMaterial);
-        this.scene.add(this.particles);
-        
-        // Add floating Kubernetes symbols
-        this.addKubernetesSymbols();
-        
-        // Position camera
-        this.camera.position.z = 50;
-        
-        // Animation loop
-        this.animateParticles();
-        
-        // Handle resize
-        window.addEventListener('resize', () => this.handleResize());
+
+    // Load mock data from mock-data.json
+    loadMockData() {
+        fetch('./mock-data.json')
+            .then(res => res.json())
+            .then(data => {
+                this.mockData = data;
+            })
+            .catch(err => console.warn('Mock data not available:', err));
     }
     
-    addKubernetesSymbols() {
-        // Create floating Kubernetes pod symbols
-        const podGeometry = new THREE.OctahedronGeometry(1);
-        const podMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0x00F5FF, 
-            wireframe: true,
-            transparent: true,
-            opacity: 0.6
-        });
-        
-        for (let i = 0; i < 20; i++) {
-            const pod = new THREE.Mesh(podGeometry, podMaterial);
-            pod.position.set(
-                (Math.random() - 0.5) * 80,
-                (Math.random() - 0.5) * 80,
-                (Math.random() - 0.5) * 80
-            );
-            this.scene.add(pod);
-            this.kubernetesNodes.push(pod);
-        }
-    }
-    
-    animateParticles() {
-        if (!this.particles || !this.renderer) return;
-        
-        requestAnimationFrame(() => this.animateParticles());
-        
-        // Rotate particles
-        this.particles.rotation.x += 0.001;
-        this.particles.rotation.y += 0.002;
-        
-        // Animate Kubernetes nodes
-        this.kubernetesNodes.forEach((node, index) => {
-            node.rotation.x += 0.01;
-            node.rotation.y += 0.01;
-            node.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
-        });
-        
-        this.renderer.render(this.scene, this.camera);
-    }
-    
-    handleResize() {
-        if (!this.camera || !this.renderer) return;
-        
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+    // Aurora Gradient Background - now CSS-based, no setup needed
+    // The animation is handled by CSS with GPU acceleration
     
     // Scroll Animations
     setupScrollAnimations() {
@@ -565,23 +470,168 @@ Available commands:
     
     // Kubernetes Visualization
     setupKubernetesVisualization() {
-        // This would be enhanced with more complex 3D visualization
-        // For now, we'll use the particle system as base
+        // Aurora background is CSS-based
+        // This space reserved for future 3D enhancements
+    }
+
+    // Setup Chatbot Widget
+    setupChatbot() {
+        const toggle = document.getElementById('chatbot-toggle');
+        const messages = document.getElementById('chatbot-messages');
         
-        // Add mouse interaction to particles
-        if (this.particles && this.renderer) {
-            const canvas = this.renderer.domElement;
-            canvas.addEventListener('mousemove', (e) => {
-                const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-                const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-                
-                // Animate particles based on mouse position
-                if (this.particles) {
-                    this.particles.rotation.x = mouseY * 0.1;
-                    this.particles.rotation.y = mouseX * 0.1;
+        if (!toggle || !messages) return;
+        
+        let isOpen = false;
+        
+        toggle.addEventListener('click', () => {
+            isOpen = !isOpen;
+            if (isOpen) {
+                messages.classList.remove('hidden');
+                toggle.innerHTML = '<span aria-hidden="true" class="text-2xl">✕</span>';
+                toggle.setAttribute('aria-expanded', 'true');
+                this.chatbotActive = true;
+            } else {
+                messages.classList.add('hidden');
+                toggle.innerHTML = '<span aria-hidden="true" class="text-2xl">💬</span>';
+                toggle.setAttribute('aria-expanded', 'false');
+                this.chatbotActive = false;
+            }
+        });
+
+        // Add input for chatbot
+        const inputHTML = `
+            <div class="mt-2 flex gap-2">
+                <input type="text" id="chatbot-input" placeholder="Ask me anything..." 
+                    class="flex-1 bg-deep-space border border-matrix-green px-3 py-2 rounded text-sm text-aurora-white focus:outline-none focus:border-cyber-blue" />
+                <button onclick="sendChatMessage()" class="bg-cyber-blue text-deep-space px-3 py-2 rounded text-sm font-semibold hover:bg-opacity-80 transition">
+                    Send
+                </button>
+            </div>
+        `;
+        messages.innerHTML += inputHTML;
+        
+        // Handle enter key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && this.chatbotActive) {
+                sendChatMessage();
+            }
+        });
+    }
+
+    // Setup Xterm.js Terminal
+    setupXTerminal() {
+        const termContainer = document.getElementById('xterm');
+        if (!termContainer || typeof Terminal === 'undefined') return;
+
+        try {
+            this.xtermTerminal = new Terminal({
+                cols: 80,
+                rows: 24,
+                theme: {
+                    background: '#0A0A0A',
+                    foreground: '#F8F8FF',
+                    cursor: '#00F5FF',
+                    cursorAccent: '#0A0A0A',
+                    selectionBackground: 'rgba(0, 245, 255, 0.2)',
+                    black: '#0A0A0A',
+                    red: '#FF6B6B',
+                    green: '#39FF14',
+                    yellow: '#FFA500',
+                    blue: '#00F5FF',
+                    magenta: '#BC13FE',
+                    cyan: '#00F5FF',
+                    white: '#F8F8FF'
                 }
             });
+
+            this.xtermTerminal.open(termContainer);
+            
+            if (typeof FitAddon !== 'undefined') {
+                const fitAddon = new FitAddon.FitAddon();
+                this.xtermTerminal.loadAddon(fitAddon);
+                fitAddon.fit();
+                
+                window.addEventListener('resize', () => fitAddon.fit());
+            }
+
+            this.xtermTerminal.writeln('\x1b[1;32m Welcome to DevOps Terminal \x1b[0m');
+            this.xtermTerminal.writeln('\x1b[1;36m Type "help" for available commands \x1b[0m');
+            this.xtermTerminal.write('\n$ ');
+
+            // Terminal input handling
+            let inputBuffer = '';
+            this.xtermTerminal.onData((data) => {
+                if (data === '\r') {
+                    this.executeTerminalCommand(inputBuffer);
+                    inputBuffer = '';
+                } else if (data === '\u007F') {
+                    if (inputBuffer.length > 0) {
+                        inputBuffer = inputBuffer.slice(0, -1);
+                        this.xtermTerminal.write('\b \b');
+                    }
+                } else {
+                    inputBuffer += data;
+                    this.xtermTerminal.write(data);
+                }
+            });
+        } catch (e) {
+            console.warn('Xterm.js initialization failed:', e);
         }
+    }
+
+    executeTerminalCommand(command) {
+        const cmd = command.trim();
+        if (!cmd) {
+            this.xtermTerminal.write('\n$ ');
+            return;
+        }
+
+        this.xtermTerminal.write('\n');
+
+        let output = '';
+        if (this.mockData && this.mockData.commands[cmd]) {
+            output = this.mockData.commands[cmd].output;
+        } else if (this.terminalCommands[cmd]) {
+            output = this.terminalCommands[cmd].call(this);
+        } else {
+            output = `bash: ${cmd}: command not found\nType 'help' for available commands.`;
+        }
+
+        this.xtermTerminal.writeln(output);
+        this.xtermTerminal.write('$ ');
+    }
+
+    // Setup 3D Rotating Cube on About Page
+    setup3DCube() {
+        const cube = document.querySelector('.cube');
+        if (!cube) return;
+
+        let rotationX = 0;
+        let rotationY = 0;
+        let rotationZ = 0;
+        let isRotating = true;
+
+        const rotateCube = () => {
+            if (isRotating) {
+                rotationX += 0.5;
+                rotationY += 0.8;
+                cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg)`;
+            }
+            requestAnimationFrame(rotateCube);
+        };
+
+        // Pause on hover
+        const container = document.querySelector('.cube-container');
+        if (container) {
+            container.addEventListener('mouseenter', () => {
+                isRotating = false;
+            });
+            container.addEventListener('mouseleave', () => {
+                isRotating = true;
+            });
+        }
+
+        rotateCube();
     }
 }
 
@@ -592,8 +642,130 @@ function runCommand(command) {
     }
 }
 
+// Global function for terminal commands from buttons
+function runTerminalCommand(command) {
+    if (window.portfolio && window.portfolio.xtermTerminal) {
+        window.portfolio.xtermTerminal.writeln(`$ ${command}`);
+        window.portfolio.executeTerminalCommand(command);
+    }
+}
+
+// Global function to clear terminal
+function clearTerminalOutput() {
+    if (window.portfolio && window.portfolio.xtermTerminal) {
+        window.portfolio.xtermTerminal.clear();
+    }
+}
+
+// Global function for sending chat messages
+async function sendChatMessage() {
+    const input = document.getElementById('chatbot-input');
+    const messages = document.getElementById('chatbot-messages');
+    
+    if (!input || !messages) return;
+    
+    const userMessage = input.value.trim();
+    if (!userMessage) return;
+
+    // Add user message
+    const userDiv = document.createElement('div');
+    userDiv.className = 'mb-2 text-matrix-green text-sm';
+    userDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(userMessage)}`;
+    messages.appendChild(userDiv);
+
+    input.value = '';
+
+    // Show loading indicator
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'mb-2 text-cyber-blue text-sm';
+    loadingDiv.innerHTML = `<strong>Kimi:</strong> <span class="animate-pulse">Thinking...</span>`;
+    messages.appendChild(loadingDiv);
+    messages.scrollTop = messages.scrollHeight;
+
+    // Get AI response (async)
+    let response = await getAIResponse(userMessage);
+    
+    // Remove loading and add actual response
+    loadingDiv.remove();
+    const assistantDiv = document.createElement('div');
+    assistantDiv.className = 'mb-2 text-cyber-blue text-sm';
+    assistantDiv.innerHTML = `<strong>Kimi:</strong> ${escapeHtml(response)}`;
+    messages.appendChild(assistantDiv);
+
+    messages.scrollTop = messages.scrollHeight;
+}
+
+async function getAIResponse(message) {
+    const msg = message.toLowerCase();
+    
+    // Try to use Google AI API if key is available
+    const apiKey = localStorage.getItem('GOOGLE_AI_API_KEY');
+    
+    if (apiKey && apiKey !== 'YOUR_API_KEY_HERE') {
+        try {
+            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + apiKey, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: `You are Kimi, a helpful AI assistant for Venkatesh's DevOps portfolio. Answer this question about Venkatesh: ${message}\n\nAbout Venkatesh:\n- Principal DevOps Engineer with 8+ years experience\n- Kubernetes expert (50+ clusters managed)\n- GCP certified architect\n- Tech stack: K8s, Terraform, Docker, Helm, GCP, AWS, Jenkins, GitLab CI, Prometheus, Grafana\n- Email: bandivenky2222@gmail.com`
+                        }]
+                    }]
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || getDefaultResponse(msg);
+            }
+        } catch (err) {
+            console.warn('Google AI API failed:', err);
+        }
+    }
+    
+    // Fallback to predefined responses
+    return getDefaultResponse(msg);
+}
+
+function getDefaultResponse(msg) {
+    if (msg.includes('kubernetes') || msg.includes('k8s')) {
+        return 'Venkatesh is a Kubernetes expert with 8+ years of container orchestration experience. He has managed 50+ clusters in production environments with 99.97% uptime!';
+    }
+    if (msg.includes('gcp') || msg.includes('cloud')) {
+        return 'He is a GCP-certified architect and has designed multi-cloud infrastructure supporting 2.3M+ users across GCP, AWS, and on-premises environments.';
+    }
+    if (msg.includes('project') || msg.includes('experience')) {
+        return 'Check the Projects page for detailed case studies! His work spans DevOps automation, infrastructure as code, CI/CD pipelines, and cloud migrations.';
+    }
+    if (msg.includes('contact') || msg.includes('email')) {
+        return 'Reach out to Venkatesh at bandivenky2222@gmail.com or through the Contact page. He\'s always open to discussing DevOps and infrastructure challenges!';
+    }
+    if (msg.includes('skill') || msg.includes('stack')) {
+        return 'His tech stack includes Kubernetes, Terraform, Docker, Helm, GCP, AWS, Jenkins, GitLab CI, Prometheus, Grafana, ELK stack, and much more!';
+    }
+    
+    return 'Great question! I\'m an AI assistant here to help you learn about Venkatesh\'s experience. Try asking about his Kubernetes skills, GCP expertise, projects, or how to contact him!';
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Load API key from .env file
+    loadEnvironmentVariables();
+    
     window.portfolio = new DevOpsPortfolio();
     
     // Add some additional interactive features
@@ -606,16 +778,29 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Command palette opened');
         }
     });
+
+function loadEnvironmentVariables() {
+    // Try to load from .env file
+    fetch('./.env')
+        .then(res => res.text())
+        .then(data => {
+            const lines = data.split('\n');
+            lines.forEach(line => {
+                if (line.startsWith('GOOGLE_AI_API_KEY=')) {
+                    const apiKey = line.split('=')[1].trim();
+                    if (apiKey && apiKey !== 'YOUR_API_KEY_HERE') {
+                        localStorage.setItem('GOOGLE_AI_API_KEY', apiKey);
+                        console.log('✓ Google AI API key loaded');
+                    }
+                }
+            });
+        })
+        .catch(() => {
+            console.log('Note: .env file not found or not accessible');
+        });
+}
     
-    // Dark/Light mode toggle
-    const darkModeToggle = document.createElement('button');
-    darkModeToggle.innerHTML = '🌙';
-    darkModeToggle.className = 'fixed bottom-6 right-6 w-12 h-12 bg-cyber-blue text-deep-space rounded-full shadow-lg hover:scale-110 transition-transform z-50';
-    darkModeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        darkModeToggle.innerHTML = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
-    });
-    document.body.appendChild(darkModeToggle);
+    // Dark mode removed to prevent overlap with chatbot widget
     
     // Performance monitoring
     if ('performance' in window) {

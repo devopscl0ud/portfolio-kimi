@@ -316,8 +316,8 @@
                                 <label for="newsletter" class="text-gray-300">Subscribe to infrastructure insights and updates</label>
                             </div>
                             
-                            <button type="submit" class="submit-btn w-full">
-                                <span class="rocket-animation">🚀</span>
+                            <button type="submit" class="submit-btn w-full" aria-label="Submit contact form">
+                                <span aria-hidden="true" class="rocket-animation">🚀</span>
                                 Send Message & Start Building
                             </button>
                         </form>
@@ -462,8 +462,30 @@
         function handleFormSubmit(e) {
             e.preventDefault();
             
+            // Validate form
+            const form = e.target;
+            const name = form.querySelector('input[name="name"]').value.trim();
+            const email = form.querySelector('input[name="email"]').value.trim();
+            const message = form.querySelector('textarea[name="message"]').value.trim();
+            
+            // Validation
+            if (!name) {
+                showErrorMessage('Please enter your name');
+                return;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                showErrorMessage('Please enter a valid email address');
+                return;
+            }
+            
+            if (!message || message.length < 10) {
+                showErrorMessage('Please enter a message (at least 10 characters)');
+                return;
+            }
+            
             // Show success animation
-            const submitBtn = e.target.querySelector('.submit-btn');
+            const submitBtn = form.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             
             submitBtn.innerHTML = '<span>✅</span> Message Sent Successfully!';
@@ -475,11 +497,36 @@
                 submitBtn.style.background = 'linear-gradient(45deg, #00F5FF, #39FF14)';
                 
                 // Reset form
-                e.target.reset();
+                form.reset();
                 
                 // Show success message
                 showSuccessMessage();
             }, 2000);
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showErrorMessage(text) {
+            const message = document.createElement('div');
+            message.className = 'fixed top-24 right-6 bg-red-600 text-white p-4 rounded-lg shadow-lg z-50';
+            message.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">⚠️</span>
+                    <div>
+                        <p class="font-semibold">Form Error</p>
+                        <p class="text-sm">${text}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
         }
         
         function showSuccessMessage() {
@@ -526,6 +573,18 @@
         }
     </script>
     
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="fixed bottom-6 right-6 z-40 flex flex-col" role="region" aria-label="Chat assistant">
+        <div id="chatbot-messages" class="hidden bg-deep-space border border-cyber-blue rounded-lg p-4 w-96 h-96 overflow-y-auto mb-4 glassmorphism" style="max-width: calc(100vw - 2rem);" aria-live="polite">
+            <div class="text-cyber-blue text-sm font-mono">Assistant: Hello! I'm Kimi, Venkatesh's DevOps AI assistant. Ask me anything about his expertise, projects, or skills!</div>
+        </div>
+        <button id="chatbot-toggle" class="w-14 h-14 bg-gradient-to-r from-cyber-blue to-matrix-green rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform" aria-label="Open chat assistant" aria-expanded="false">
+            <span aria-hidden="true" class="text-2xl">💬</span>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.8.0/lib/addon-fit.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

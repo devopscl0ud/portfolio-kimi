@@ -1,0 +1,37 @@
+{
+  "name": "devops-portfolio-kimi",
+  "version": "1.0.0",
+  "description": "Principal DevOps Engineer Portfolio - Interactive Showcase with Kubernetes, GCP, and Infrastructure Excellence",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "http-server -p 3000 -c-1",
+    "build": "echo 'Static site - no build required'",
+    "build:prod": "echo 'Static site - no build required'",
+    "start": "http-server -p 3000",
+    "test": "echo 'Tests not configured'",
+    "lint": "eslint . --ext .js,.html",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "devops",
+    "kubernetes",
+    "infrastructure",
+    "portfolio",
+    "gcp",
+    "terraform",
+    "docker"
+  ],
+  "author": "Bandi Venkatesh",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

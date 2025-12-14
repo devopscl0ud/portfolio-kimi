@@ -115,6 +115,79 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* 3D Cube Styles */
+        .cube-container {
+            width: 300px;
+            height: 300px;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease-out;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid rgba(0, 245, 255, 0.5);
+            background: rgba(10, 10, 10, 0.8);
+            backface-visibility: hidden;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .cube-face:hover {
+            border-color: #00F5FF;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+            background: rgba(10, 10, 10, 0.95);
+        }
+
+        .cube-front { transform: rotateY(0deg) translateZ(150px); color: #00F5FF; }
+        .cube-back { transform: rotateY(180deg) translateZ(150px); color: #39FF14; }
+        .cube-right { transform: rotateY(90deg) translateZ(150px); color: #BC13FE; }
+        .cube-left { transform: rotateY(-90deg) translateZ(150px); color: #00F5FF; }
+        .cube-top { transform: rotateX(90deg) translateZ(150px); color: #39FF14; }
+        .cube-bottom { transform: rotateX(-90deg) translateZ(150px); color: #BC13FE; }
+
+        .cube.rotate-x { transform: rotateX(90deg); }
+        .cube.rotate-y { transform: rotateY(90deg); }
+        .cube.rotate-z { transform: rotateZ(90deg); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cube {
+                animation: none !important;
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .cube-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .cube-face {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+
+            .cube-front, .cube-back, .cube-right, .cube-left, .cube-top, .cube-bottom {
+                transform: rotateY(0deg) translateZ(125px);
+            }
+        }
     </style>
 </head>
 <body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
@@ -266,13 +339,54 @@
             
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div class="scroll-reveal">
-                    <div id="skillGlobe" class="skill-globe glassmorphism flex items-center justify-center">
-                        <div class="text-center">
-                            <div class="text-6xl mb-4">🌍</div>
-                            <p class="text-gray-400">Interactive 3D Skill Globe</p>
-                            <p class="text-sm text-gray-500 mt-2">Click and drag to explore</p>
+                    <!-- 3D Rotating Cube -->
+                    <div class="cube-container glassmorphism rounded-lg p-8 flex items-center justify-center" style="background: rgba(10, 10, 10, 0.9);">
+                        <div class="cube" style="width: 280px; height: 280px;">
+                            <div class="cube-face cube-front">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">☸️</div>
+                                    <div>Kubernetes</div>
+                                    <div class="text-xs mt-1">Orchestration</div>
+                                </div>
+                            </div>
+                            <div class="cube-face cube-back">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">☁️</div>
+                                    <div>Cloud</div>
+                                    <div class="text-xs mt-1">GCP, AWS, Azure</div>
+                                </div>
+                            </div>
+                            <div class="cube-face cube-right">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">🔄</div>
+                                    <div>CI/CD</div>
+                                    <div class="text-xs mt-1">GitOps, Automation</div>
+                                </div>
+                            </div>
+                            <div class="cube-face cube-left">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">📊</div>
+                                    <div>Monitoring</div>
+                                    <div class="text-xs mt-1">Prometheus, Grafana</div>
+                                </div>
+                            </div>
+                            <div class="cube-face cube-top">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">🔒</div>
+                                    <div>Security</div>
+                                    <div class="text-xs mt-1">DevSecOps</div>
+                                </div>
+                            </div>
+                            <div class="cube-face cube-bottom">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">⚙️</div>
+                                    <div>IaC</div>
+                                    <div class="text-xs mt-1">Terraform, Helm</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <p class="text-center text-gray-400 text-sm mt-4">Hover to pause rotation • Auto-rotates when active</p>
                 </div>
                 
                 <div class="space-y-6 scroll-reveal">
@@ -606,6 +720,18 @@
         }
     </script>
     
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="fixed bottom-6 right-6 z-40 flex flex-col" role="region" aria-label="Chat assistant">
+        <div id="chatbot-messages" class="hidden bg-deep-space border border-cyber-blue rounded-lg p-4 w-96 h-96 overflow-y-auto mb-4 glassmorphism" style="max-width: calc(100vw - 2rem);" aria-live="polite">
+            <div class="text-cyber-blue text-sm font-mono">Assistant: Hello! I'm Kimi, Venkatesh's DevOps AI assistant. Ask me anything about his expertise, projects, or skills!</div>
+        </div>
+        <button id="chatbot-toggle" class="w-14 h-14 bg-gradient-to-r from-cyber-blue to-matrix-green rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform" aria-label="Open chat assistant" aria-expanded="false">
+            <span aria-hidden="true" class="text-2xl">💬</span>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.8.0/lib/addon-fit.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

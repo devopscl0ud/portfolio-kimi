@@ -8,7 +8,7 @@
     
     <!-- Open Graph -->
     <meta property="og:title" content="Bandi Venkatesh - Principal DevOps Engineer">
-    <meta property="og:description" content="Where Infrastructure Meets Art – Engineering Systems That Scale Beautifully">
+    <meta property="og:description" content="Where Infrastructure Meets Artist – Engineering Systems That Scale Beautifully">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bandi-venkatesh.dev">
     <meta property="og:image" content="./resources/hero-portrait.png">
@@ -77,6 +77,105 @@
         @keyframes pulse-neon {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
+        }
+
+        /* Aurora Gradient Background Animation */
+        @keyframes aurora-flow-1 {
+            0% { transform: translateX(-100%) translateY(0); }
+            50% { transform: translateX(0) translateY(-10px); }
+            100% { transform: translateX(100%) translateY(0); }
+        }
+
+        @keyframes aurora-flow-2 {
+            0% { transform: translateX(100%) translateY(0); }
+            50% { transform: translateX(0) translateY(10px); }
+            100% { transform: translateX(-100%) translateY(0); }
+        }
+
+        @keyframes aurora-flow-3 {
+            0% { transform: translateX(-100%) translateY(5px); }
+            50% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(100%) translateY(-5px); }
+        }
+
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0A0A0A;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .aurora-ribbon {
+            position: absolute;
+            width: 200%;
+            height: 300%;
+            opacity: 0.12;
+            filter: blur(40px);
+            mix-blend-mode: screen;
+        }
+
+        .aurora-blue {
+            background: linear-gradient(90deg, transparent, #00F5FF, transparent);
+            top: 20%;
+            animation: aurora-flow-1 20s linear infinite;
+        }
+
+        .aurora-green {
+            background: linear-gradient(90deg, transparent, #39FF14, transparent);
+            top: 50%;
+            animation: aurora-flow-2 20s linear infinite;
+            animation-delay: 2s;
+        }
+
+        .aurora-purple {
+            background: linear-gradient(90deg, transparent, #BC13FE, transparent);
+            top: 75%;
+            animation: aurora-flow-3 20s linear infinite;
+            animation-delay: 4s;
+        }
+
+        /* Fallback for low-end devices */
+        @media (prefers-reduced-motion: reduce) {
+            .aurora-ribbon {
+                animation: none !important;
+                opacity: 0.15;
+            }
+        }
+
+        /* Accessibility: Focus states for keyboard navigation */
+        a:focus, button:focus, input:focus, textarea:focus, select:focus {
+            outline: 2px solid #00F5FF;
+            outline-offset: 2px;
+        }
+
+        /* Skip to main content link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #00F5FF;
+            color: #0A0A0A;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Ensure sufficient color contrast */
+        .neon-text { color: #00F5FF; }
+        .matrix-text { color: #39FF14; }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: more) {
+            body { font-weight: 500; }
+            .neon-text, .matrix-text, .purple-glow { text-shadow: none; }
         }
         
         .glassmorphism {
@@ -174,8 +273,15 @@
     </style>
 </head>
 <body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
-    <!-- Particle Background -->
-    <div class="particle-bg" id="particleCanvas"></div>
+    <!-- Skip to Main Content Link for Accessibility -->
+    <a href="#home" class="skip-link">Skip to main content</a>
+
+    <!-- Aurora Gradient Background -->
+    <div class="aurora-bg">
+        <div class="aurora-ribbon aurora-blue"></div>
+        <div class="aurora-ribbon aurora-green"></div>
+        <div class="aurora-ribbon aurora-purple"></div>
+    </div>
     
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 glassmorphism">
@@ -196,7 +302,7 @@
                     <a href="projects.html" class="hover:text-cyber-blue transition-colors duration-300">Projects</a>
                     <a href="contact.html" class="hover:text-cyber-blue transition-colors duration-300">Contact</a>
                 </div>
-                <button class="md:hidden text-cyber-blue">
+                <button class="md:hidden text-cyber-blue" aria-label="Toggle mobile menu" aria-expanded="false">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -248,10 +354,10 @@
                     
                     <!-- CTA Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 scroll-reveal">
-                        <a href="projects.html" class="bg-cyber-blue text-deep-space px-8 py-4 rounded-lg font-semibold hover:bg-opacity-80 transition-all duration-300 hover:scale-105 glow">
+                        <a href="projects.html" class="bg-cyber-blue text-deep-space px-8 py-4 rounded-lg font-semibold hover:bg-opacity-80 transition-all duration-300 hover:scale-105 glow" aria-label="View portfolio projects">
                             Explore Infrastructure Gallery
                         </a>
-                        <a href="dashboard.html" class="border-2 border-matrix-green text-matrix-green px-8 py-4 rounded-lg font-semibold hover:bg-matrix-green hover:text-deep-space transition-all duration-300">
+                        <a href="dashboard.html" class="border-2 border-matrix-green text-matrix-green px-8 py-4 rounded-lg font-semibold hover:bg-matrix-green hover:text-deep-space transition-all duration-300" aria-label="View live metrics dashboard">
                             View Real-Time Metrics
                         </a>
                     </div>
@@ -345,7 +451,19 @@
         </div>
     </footer>
     
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="fixed bottom-6 right-6 z-40 flex flex-col" role="region" aria-label="Chat assistant">
+        <div id="chatbot-messages" class="hidden bg-deep-space border border-cyber-blue rounded-lg p-4 w-96 h-96 overflow-y-auto mb-4 glassmorphism" style="max-width: calc(100vw - 2rem);" aria-live="polite">
+            <div class="text-cyber-blue text-sm font-mono">Assistant: Hello! I'm Kimi, Venkatesh's DevOps AI assistant. Ask me anything about his expertise, projects, or skills!</div>
+        </div>
+        <button id="chatbot-toggle" class="w-14 h-14 bg-gradient-to-r from-cyber-blue to-matrix-green rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform" aria-label="Open chat assistant" aria-expanded="false">
+            <span aria-hidden="true" class="text-2xl">💬</span>
+        </button>
+    </div>
+
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.8.0/lib/addon-fit.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
