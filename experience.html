@@ -188,7 +188,7 @@
                     <img src="./resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin">
                     <div>
                         <h1 class="font-orbitron font-bold text-xl neon-text">Bandi Venkatesh</h1>
-                        <p class="text-sm text-gray-400">Principal DevOps Engineer</p>
+                        <p class="text-sm text-gray-400">DevOps Engineer</p>
                     </div>
                 </div>
                 <div class="hidden md:flex space-x-8">
@@ -223,7 +223,7 @@
                     <div class="text-gray-400">Users Impacted</div>
                 </div>
                 <div class="metric-card p-6 rounded-lg text-center">
-                    <div class="impact-metric text-matrix-green">$520K+</div>
+                    <div class="impact-metric text-matrix-green">$180K+</div>
                     <div class="text-gray-400">Annual Savings</div>
                 </div>
                 <div class="metric-card p-6 rounded-lg text-center">
@@ -247,113 +247,57 @@
                         <span class="text-2xl font-bold text-deep-space">UD</span>
                     </div>
                     <div>
-                        <h3 class="font-orbitron font-bold text-3xl neon-text">Uncommon Design</h3>
-                        <p class="text-gray-400">Principal DevOps Engineer • 2023 - Present</p>
+                        <h3 class="font-orbitron font-bold text-3xl neon-text">Uncommon Design Services</h3>
+                        <p class="text-gray-400">DevOps Engineer • 03/2025 - Present</p>
                     </div>
                 </div>
                 
-                <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Tenant Zero Architecture</h4>
+                <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Multi-Tenant Infrastructure</h4>
                 
                 <div class="challenge-solution">
                     <div>
                         <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Challenge</h5>
                         <p class="text-gray-300 mb-4">
-                            Build the first multi-tenant GKE environment capable of serving 15+ concurrent clients 
-                            with complete isolation, security compliance, and self-service capabilities.
+                            Architect and manage Kubernetes infrastructure on GCP supporting multiple client projects 
+                            across fintech, e-commerce, and on-demand delivery verticals.
                         </p>
                         <ul class="text-gray-400 space-y-2">
-                            <li>• Namespace isolation and resource quotas</li>
-                            <li>• OPA policy enforcement</li>
-                            <li>• Network segmentation and security</li>
-                            <li>• Self-service tenant provisioning</li>
+                            <li>• Secure namespace segregation</li>
+                            <li>• Resource boundaries for concurrent clients</li>
+                            <li>• Rapid deployment cycles</li>
+                            <li>• Cost optimization across projects</li>
                         </ul>
                     </div>
                     
                     <div>
                         <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Solution</h5>
                         <p class="text-gray-300 mb-4">
-                            Architected a comprehensive multi-tenant platform with automated provisioning, 
-                            policy-driven security, and centralized monitoring.
+                            Built isolated multi-tenant environments with Prometheus/Grafana observability 
+                            stacks and optimized cloud costs through rightsizing and spot instances.
                         </p>
                         <ul class="text-gray-400 space-y-2">
-                            <li>• GKE clusters with namespace-as-a-service</li>
-                            <li>• OPA policies for governance</li>
-                            <li>• Istio service mesh for security</li>
-                            <li>• ArgoCD for GitOps deployment</li>
+                            <li>• GKE clusters with namespace isolation</li>
+                            <li>• CI/CD for mobile/web backends</li>
+                            <li>• Autoscaling policies</li>
+                            <li>• Spot instance utilization</li>
                         </ul>
-                    </div>
-                </div>
-                
-                <!-- Architecture Diagram -->
-                <div class="architecture-diagram scroll-reveal">
-                    <h5 class="font-orbitron font-bold text-lg neon-text mb-4">Multi-Tenant Architecture</h5>
-                    <div class="mermaid">
-                        graph TB
-                            subgraph "GKE Cluster"
-                                subgraph "Tenant A Namespace"
-                                    A1[App Pods]
-                                    A2[Service Accounts]
-                                    A3[Resource Quotas]
-                                end
-                                subgraph "Tenant B Namespace"
-                                    B1[App Pods]
-                                    B2[Service Accounts]
-                                    B3[Resource Quotas]
-                                end
-                                subgraph "Shared Services"
-                                    S1[Istio Ingress]
-                                    S2[OPA Gatekeeper]
-                                    S3[Monitoring]
-                                end
-                            end
-                            
-                            subgraph "OPA Policies"
-                                P1[Namespace Limits]
-                                P2[Security Policies]
-                                P3[Resource Constraints]
-                            end
-                            
-                            A1 --> S1
-                            B1 --> S1
-                            S2 --> P1
-                            S2 --> P2
-                            S2 --> P3
                     </div>
                 </div>
                 
                 <!-- Key Metrics -->
                 <div class="grid md:grid-cols-3 gap-6 mb-8">
                     <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-cyber-blue">15</div>
-                        <div class="text-gray-400">Concurrent Clients</div>
+                        <div class="impact-metric text-cyber-blue">Multi</div>
+                        <div class="text-gray-400">Client Verticals</div>
                     </div>
                     <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-matrix-green">$200K</div>
-                        <div class="text-gray-400">ARR from Platform</div>
+                        <div class="impact-metric text-matrix-green">Cost</div>
+                        <div class="text-gray-400">Optimized</div>
                     </div>
                     <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-electric-purple">30min</div>
-                        <div class="text-gray-400">Tenant Provisioning</div>
+                        <div class="impact-metric text-electric-purple">Rapid</div>
+                        <div class="text-gray-400">Client Releases</div>
                     </div>
-                </div>
-                
-                <!-- Code Artifact -->
-                <div class="code-snippet scroll-reveal">
-                    <h5 class="font-orbitron font-bold text-lg matrix-text mb-4">OPA Policy Example</h5>
-                    <pre><code>package kubernetes.admission
-
-deny[msg] {
-    input.request.kind.kind == "Pod"
-    input.request.object.spec.containers[_].securityContext.privileged == true
-    msg := "Privileged containers are not allowed"
-}
-
-deny[msg] {
-    input.request.kind.kind == "Pod"
-    input.request.object.spec.containers[_].image
-    not starts_with(input.request.object.spec.containers[_].image, "gcr.io/")
-    msg := "Only images from approved registries are allowed"
-}</code></pre>
                 </div>
             </div>
         </div>
@@ -369,122 +313,71 @@ deny[msg] {
                     </div>
                     <div>
                         <h3 class="font-orbitron font-bold text-3xl matrix-text">WFM Technologies</h3>
-                        <p class="text-gray-400">DevOps Architect • 2021 - 2023</p>
+                        <p class="text-gray-400">DevOps Engineer • 01/2024 - 02/2025</p>
                     </div>
                 </div>
                 
-                <h4 class="font-orbitron font-bold text-xl purple-glow mb-6">PrimeRx Platform Scaling</h4>
+                <h4 class="font-orbitron font-bold text-xl purple-glow mb-6">PrimeRx SaaS Platform</h4>
                 
                 <div class="challenge-solution">
                     <div>
                         <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Challenge</h5>
                         <p class="text-gray-300 mb-4">
-                            Scale pharmacy SaaS platform for 1000+ US pharmacies with HIPAA compliance, 
-                            handling 2M+ prescriptions monthly while maintaining 99.95% uptime.
+                            Served as dedicated DevOps engineer for PrimeRx, a US-based pharmacy management SaaS 
+                            platform serving thousands of locations with variable transaction volumes.
                         </p>
                         <ul class="text-gray-400 space-y-2">
-                            <li>• HIPAA compliance requirements</li>
-                            <li>• 300% traffic spike during peak hours</li>
-                            <li>• Multi-region disaster recovery</li>
-                            <li>• Zero-downtime deployments</li>
+                            <li>• Healthcare data protection</li>
+                            <li>• Variable transaction volumes</li>
+                            <li>• Stateful database applications</li>
+                            <li>• Zero-downtime requirements</li>
                         </ul>
                     </div>
                     
                     <div>
                         <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Solution</h5>
                         <p class="text-gray-300 mb-4">
-                            Built multi-region GKE infrastructure with Istio service mesh, Cloud SQL 
-                            with read replicas, and comprehensive security stack.
+                            Deployed production-grade GKE clusters, containerized microservices with Docker, 
+                            and engineered Jenkins/GitLab CI pipelines with blue-green deployment strategies.
                         </p>
                         <ul class="text-gray-400 space-y-2">
-                            <li>• Multi-region GKE with Istio</li>
-                            <li>• Cloud SQL with read replicas</li>
-                            <li>• Falco for runtime security</li>
-                            <li>• Trivy for image scanning</li>
+                            <li>• GKE with StatefulSets</li>
+                            <li>• Vulnerability scanning & hardening</li>
+                            <li>• Autoscaling for spikes</li>
+                            <li>• Automated testing integration</li>
                         </ul>
                     </div>
                 </div>
                 
                 <!-- Security Stack -->
                 <div class="architecture-diagram scroll-reveal">
-                    <h5 class="font-orbitron font-bold text-lg neon-text mb-4">DevSecOps Security Stack</h5>
+                    <h5 class="font-orbitron font-bold text-lg neon-text mb-4">DevSecOps Pipeline</h5>
                     <div class="mermaid">
                         graph LR
-                            subgraph "Development"
+                            subgraph "CI Pipeline"
                                 A[Code Commit]
-                                B[GitHub Actions]
-                                C[Trivy Scan]
-                                D[Snyk Analysis]
+                                B[Jenkins Build]
+                                C[Vuln Scan]
                             end
                             
                             subgraph "Deployment"
-                                E[Container Registry]
-                                F[Security Gates]
-                                G[Signed Images]
+                                D[Blue Env]
+                                E[Green Env]
+                                F[Traffic Switch]
                             end
                             
-                            subgraph "Runtime"
-                                H[GKE Cluster]
-                                I[Falco Runtime]
-                                J[OPA Policies]
-                                K[Vault Secrets]
+                            subgraph "Production"
+                                G[GKE Cluster]
+                                H[Autoscaling]
                             end
                             
                             A --> B
                             B --> C
                             C --> D
-                            D --> E
+                            D --> F
                             E --> F
                             F --> G
                             G --> H
-                            H --> I
-                            H --> J
-                            H --> K
-                    </div>
-                </div>
-                
-                <!-- Scale Metrics -->
-                <div class="grid md:grid-cols-4 gap-6 mb-8">
-                    <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-cyber-blue">2M+</div>
-                        <div class="text-gray-400">Prescriptions/Month</div>
-                    </div>
-                    <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-matrix-green">500</div>
-                        <div class="text-gray-400">TPS Peak</div>
-                    </div>
-                    <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-electric-purple">300%</div>
-                        <div class="text-gray-400">Traffic Spike Handled</div>
-                    </div>
-                    <div class="metric-card p-6 rounded-lg text-center">
-                        <div class="impact-metric text-cyber-blue">$180K</div>
-                        <div class="text-gray-400">Annual Savings</div>
-                    </div>
-                </div>
-                
-                <!-- Cost Optimization Story -->
-                <div class="scroll-reveal">
-                    <h5 class="font-orbitron font-bold text-lg matrix-text mb-4">Cost Optimization Success</h5>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h6 class="font-semibold text-cyber-blue mb-3">Before Optimization</h6>
-                            <ul class="text-gray-400 space-y-2">
-                                <li>• Over-provisioned nodes: $240K/year</li>
-                                <li>• On-demand instances only</li>
-                                <li>• No spot instance usage</li>
-                                <li>• Manual scaling decisions</li>
-                            </ul>
-                        </div>
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h6 class="font-semibold text-matrix-green mb-3">After Optimization</h6>
-                            <ul class="text-gray-400 space-y-2">
-                                <li>• Right-sized instances: $180K/year savings</li>
-                                <li>• 40% spot instance adoption</li>
-                                <li>• Automated autoscaling</li>
-                                <li>• Committed use discounts</li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -501,73 +394,39 @@ deny[msg] {
                     </div>
                     <div>
                         <h3 class="font-orbitron font-bold text-3xl purple-glow">Cognizant</h3>
-                        <p class="text-gray-400">Cloud Engineer • 2018 - 2021</p>
+                        <p class="text-gray-400">Process Executive (Cloud & DevOps) • 06/2021 - 12/2023</p>
                     </div>
                 </div>
                 
-                <h4 class="font-orbitron font-bold text-xl neon-text mb-6">DevOps Transformation Journey</h4>
+                <h4 class="font-orbitron font-bold text-xl neon-text mb-6">Cloud Transformation Journey</h4>
                 
                 <div class="challenge-solution">
                     <div>
-                        <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Transformation</h5>
+                        <h5 class="font-semibold text-lg mb-4 text-cyber-blue">The Role</h5>
                         <p class="text-gray-300 mb-4">
-                            Career pivot from operations to DevOps in 18 months while achieving 
-                            Google Cloud ACE certification and building automation capabilities.
+                            Started in Google Maps geospatial operations before transitioning to a technical role 
+                            supporting cloud infrastructure projects on GCP post-certification.
                         </p>
                         <ul class="text-gray-400 space-y-2">
-                            <li>• Zero to hero in cloud engineering</li>
-                            <li>• Google ACE in 11 months</li>
-                            <li>• Full-time work while studying</li>
-                            <li>• Mentoring junior engineers</li>
+                            <li>• Operational workflows</li>
+                            <li>• Data quality checks</li>
+                            <li>• Process documentation</li>
+                            <li>• GCP ACE Certification (May 2022)</li>
                         </ul>
                     </div>
                     
                     <div>
                         <h5 class="font-semibold text-lg mb-4 text-matrix-green">The Impact</h5>
                         <p class="text-gray-300 mb-4">
-                            Built comprehensive automation framework and CI/CD pipelines that 
-                            transformed team productivity and deployment reliability.
+                            Assisted in Kubernetes-based application deployments on GKE and supported 
+                            CI/CD workflow implementations using Jenkins and Google Cloud Build.
                         </p>
                         <ul class="text-gray-400 space-y-2">
-                            <li>• 30+ Python automation scripts</li>
-                            <li>• 10+ CI/CD pipelines</li>
-                            <li>• 80% deployment time reduction</li>
-                            <li>• 5 engineers trained</li>
+                            <li>• Automated provisioning (Python/GCP)</li>
+                            <li>• Application deployment pipelines</li>
+                            <li>• Linux VM management</li>
+                            <li>• Cloud resource monitoring</li>
                         </ul>
-                    </div>
-                </div>
-                
-                <!-- Learning Timeline -->
-                <div class="scroll-reveal">
-                    <h5 class="font-orbitron font-bold text-lg purple-glow mb-4">18-Month Transformation Timeline</h5>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h6 class="font-semibold text-cyber-blue mb-3">Months 1-6</h6>
-                            <ul class="text-gray-400 space-y-2">
-                                <li>• GCP fundamentals</li>
-                                <li>• Linux administration</li>
-                                <li>• Python scripting</li>
-                                <li>• Docker basics</li>
-                            </ul>
-                        </div>
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h6 class="font-semibold text-matrix-green mb-3">Months 7-12</h6>
-                            <ul class="text-gray-400 space-y-2">
-                                <li>• Kubernetes deep dive</li>
-                                <li>• CI/CD implementation</li>
-                                <li>• Infrastructure automation</li>
-                                <li>• Monitoring setup</li>
-                            </ul>
-                        </div>
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h6 class="font-semibold text-electric-purple mb-3">Months 13-18</h6>
-                            <ul class="text-gray-400 space-y-2">
-                                <li>• GCP ACE certification</li>
-                                <li>• Advanced Kubernetes</li>
-                                <li>• Security implementation</li>
-                                <li>• Team leadership</li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -583,38 +442,28 @@ deny[msg] {
                         <span class="text-2xl font-bold text-deep-space">SK</span>
                     </div>
                     <div>
-                        <h3 class="font-orbitron font-bold text-3xl neon-text">SYKES</h3>
-                        <p class="text-gray-400">IT Operations Specialist • 2016 - 2018</p>
+                        <h3 class="font-orbitron font-bold text-3xl neon-text">SYKES Business Services</h3>
+                        <p class="text-gray-400">Technical Operations Executive • 10/2020 - 05/2021</p>
                     </div>
                 </div>
                 
-                <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Foundation Building</h4>
+                <h4 class="font-orbitron font-bold text-xl matrix-text mb-6">Operational Foundation</h4>
                 
                 <div class="scroll-reveal">
                     <p class="text-gray-300 mb-6">
-                        Started career in IT operations, mastering ITIL processes, incident management, 
-                        and system reliability principles that would become the foundation for DevOps excellence.
+                        Handled operational incidents while maintaining accurate documentation and SLA compliance. 
+                        Gained foundational exposure to Linux systems, virtualization, and IT service management.
                     </p>
                     
                     <div class="grid md:grid-cols-2 gap-8">
                         <div class="glassmorphism p-6 rounded-lg">
-                            <h5 class="font-semibold text-cyber-blue mb-4">Key Learnings</h5>
+                            <h5 class="font-semibold text-cyber-blue mb-4">Key Responsibilities</h5>
                             <ul class="text-gray-400 space-y-2">
-                                <li>• ITIL service management</li>
-                                <li>• SLA/SLO fundamentals</li>
-                                <li>• Incident triage processes</li>
-                                <li>• Root cause analysis</li>
-                                <li>• Change management</li>
+                                <li>• Incident triage & resolution</li>
+                                <li>• SLA compliance</li>
+                                <li>• IT service management</li>
+                                <li>• Linux system exposure</li>
                             </ul>
-                        </div>
-                        
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h5 class="font-semibold text-matrix-green mb-4">Core Philosophy</h5>
-                            <blockquote class="text-gray-300 italic">
-                                "Every minute of downtime is a trust deficit. Reliability isn't just 
-                                about uptime - it's about maintaining user confidence and business continuity."
-                            </blockquote>
-                            <p class="text-gray-400 text-sm mt-4">— Core principle carried forward</p>
                         </div>
                     </div>
                 </div>

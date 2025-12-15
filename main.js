@@ -587,7 +587,7 @@ drwxr-xr-x  3 user user 4096 Jan 13 11:20 terraform`;
     }
     
     getWhoami() {
-        return 'bandi-venkatesh (Principal DevOps Engineer)';
+        return 'bandi-venkatesh (DevOps Engineer)';
     }
     
     getDate() {
@@ -1142,7 +1142,7 @@ async function getAIResponse(message) {
 
             const body = JSON.stringify({
                 "prompt": {
-                    "text": `You are Kimi, a helpful AI assistant for Venkatesh's DevOps portfolio. Answer succinctly: ${message}\n\nAbout Venkatesh:\n- Principal DevOps Engineer with 8+ years experience\n- Kubernetes expert (50+ clusters managed)\n- GCP certified architect\n- Tech stack: K8s, Terraform, Docker, Helm, GCP, AWS, Jenkins, GitLab CI, Prometheus, Grafana\n- Email: bandivenky2222@gmail.com`
+                    "text": `You are Kimi, a helpful AI assistant for Venkatesh's DevOps portfolio. Answer succinctly: ${message}\n\nAbout Venkatesh:\n- DevOps Engineer with 5+ years experience\n- Expert in Kubernetes (GKE), Terraform, and CI/CD (Jenkins, GitLab)\n- Currently at Uncommon Design Services; previously WFM Technologies & Cognizant\n- GCP Associate Cloud Engineer Certified\n- Email: bandivenky2222@gmail.com | Phone: +91-8555012224`
                 },
                 "temperature": 0.2,
                 "maxOutputTokens": 256
@@ -1172,19 +1172,19 @@ async function getAIResponse(message) {
 
 function getDefaultResponse(msg) {
     if (msg.includes('kubernetes') || msg.includes('k8s')) {
-        return 'Venkatesh is a Kubernetes expert with 8+ years of container orchestration experience. He has managed 50+ clusters in production environments with 99.97% uptime!';
+        return 'Venkatesh is a Kubernetes expert specializing in GKE, Deployments, StatefulSets, and Security. He has architected multi-tenant environments for fintech and e-commerce clients.';
     }
     if (msg.includes('gcp') || msg.includes('cloud')) {
-        return 'He is a GCP-certified architect and has designed multi-cloud infrastructure supporting 2.3M+ users across GCP, AWS, and on-premises environments.';
+        return 'He is a Google Cloud Associate Cloud Engineer with deep expertise in GKE, Compute Engine, Cloud SQL, and Terraform for Infrastructure as Code.';
     }
     if (msg.includes('project') || msg.includes('experience')) {
-        return 'Check the Projects page for detailed case studies! His work spans DevOps automation, infrastructure as code, CI/CD pipelines, and cloud migrations.';
+        return 'His key projects include the PrimeRx pharmacy platform at WFM Technologies and multi-tenant infrastructure at Uncommon Design. Check the Experience page for details!';
     }
     if (msg.includes('contact') || msg.includes('email')) {
-        return 'Reach out to Venkatesh at bandivenky2222@gmail.com or through the Contact page. He\'s always open to discussing DevOps and infrastructure challenges!';
+        return 'Reach out to Venkatesh at bandivenky2222@gmail.com or +91-8555012224. He is currently based in Hyderabad, India.';
     }
     if (msg.includes('skill') || msg.includes('stack')) {
-        return 'His tech stack includes Kubernetes, Terraform, Docker, Helm, GCP, AWS, Jenkins, GitLab CI, Prometheus, Grafana, ELK stack, and much more!';
+        return 'His core stack includes Kubernetes (GKE), Terraform, Jenkins, GitLab CI/CD, Prometheus, Grafana, and Bash/Python scripting.';
     }
     
     return 'Great question! I\'m an AI assistant here to help you learn about Venkatesh\'s experience. Try asking about his Kubernetes skills, GCP expertise, projects, or how to contact him!';

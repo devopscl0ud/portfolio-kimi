@@ -1,7 +1,7 @@
 {
   "name": "devops-portfolio-kimi",
   "version": "1.0.0",
-  "description": "Principal DevOps Engineer Portfolio - Interactive Showcase with Kubernetes, GCP, and Infrastructure Excellence",
+  "description": "DevOps Engineer Portfolio - Interactive Showcase with Kubernetes, GCP, and Infrastructure Excellence",
   "main": "index.html",
   "type": "module",
   "scripts": {
