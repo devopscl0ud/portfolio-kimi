@@ -48,17 +48,17 @@
         }
         
         .neon-text {
-            color: #00F5FF;
+            color: #00F5FF !important;
             text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
         }
         
         .matrix-text {
-            color: #39FF14;
+            color: #39FF14 !important;
             text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
         }
         
         .purple-glow {
-            color: #BC13FE;
+            color: #BC13FE !important;
             text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
         }
         
@@ -701,19 +701,30 @@ deny[msg] {
                 const isUsers = text.includes('M+');
                 const isTPS = text.includes('TPS');
                 
-                let target = parseInt(text.replace(/[^0-9]/g, ''));
+                // Extract number, allowing decimals
+                let target = parseFloat(text.replace(/[^0-9.]/g, ''));
                 let current = 0;
-                const increment = target / 100;
+                const increment = target / 60; // 60 frames approx 1 sec
                 
                 const updateCounter = () => {
                     current += increment;
                     if (current < target) {
-                        let display = Math.floor(current);
-                        if (isCurrency) display = '$' + display + 'K+';
-                        if (isPercentage) display = display + '%';
-                        if (isTime) display = display + 'min';
-                        if (isUsers) display = (display/10).toFixed(1) + 'M+';
-                        if (isTPS) display = display + 'TPS';
+                        let display = current;
+                        
+                        if (isCurrency) {
+                            // Assumes K+ format for now based on content
+                            display = '$' + Math.floor(current) + 'K+';
+                        } else if (isPercentage) {
+                            display = current.toFixed(2) + '%';
+                        } else if (isTime) {
+                            display = Math.floor(current) + 'min';
+                        } else if (isUsers) {
+                            display = current.toFixed(1) + 'M+';
+                        } else if (isTPS) {
+                            display = Math.floor(current) + 'TPS';
+                        } else {
+                            display = Math.floor(current);
+                        }
                         
                         counter.textContent = display;
                         requestAnimationFrame(updateCounter);

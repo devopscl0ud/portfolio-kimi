@@ -190,17 +190,17 @@
         }
         
         .neon-text {
-            color: #00F5FF;
+            color: #00F5FF !important;
             text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
         }
         
         .matrix-text {
-            color: #39FF14;
+            color: #39FF14 !important;
             text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
         }
         
         .purple-glow {
-            color: #BC13FE;
+            color: #BC13FE !important;
             text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
         }
         
@@ -274,6 +274,18 @@
         .scroll-reveal.revealed {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Marquee Styles */
+        .marquee {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+        .marquee-content {
+            display: flex;
+            white-space: nowrap;
+            width: max-content;
         }
     </style>
 </head>
@@ -468,8 +480,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.9.0/lib/addon-fit.min.js"></script>
+    <!-- Heavy terminal libraries are loaded only on the dashboard to improve homepage performance -->
     <script src="main.js"></script>
 </body>
 </html>

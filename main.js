@@ -347,6 +347,10 @@ class DevOpsPortfolio {
     
     // Scroll Animations
     setupScrollAnimations() {
+        if (typeof IntersectionObserver === 'undefined') {
+            console.warn('IntersectionObserver not available; skipping scroll animations.');
+            return;
+        }
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -374,13 +378,13 @@ class DevOpsPortfolio {
     setupGSAPAnimations() {
         // Animate hero text
         gsap.timeline()
-            .from('.neon-text', { 
+            .from('#home h2 .neon-text', { 
                 opacity: 0, 
                 y: 100, 
                 duration: 1, 
                 ease: 'power3.out' 
             })
-            .from('.matrix-text', { 
+            .from('#home h2 .matrix-text', { 
                 opacity: 0, 
                 y: 100, 
                 duration: 1, 
@@ -400,7 +404,9 @@ class DevOpsPortfolio {
         const counters = document.querySelectorAll('.metric-counter');
         
         const animateCounter = (counter) => {
-            const target = parseInt(counter.getAttribute('data-target'));
+            const targetAttr = counter.getAttribute('data-target');
+            const target = parseFloat(targetAttr);
+            const isFloat = targetAttr.includes('.') || target % 1 !== 0;
             const duration = 2000;
             const increment = target / (duration / 16);
             let current = 0;
@@ -408,7 +414,7 @@ class DevOpsPortfolio {
             const updateCounter = () => {
                 current += increment;
                 if (current < target) {
-                    counter.textContent = Math.floor(current);
+                    counter.textContent = isFloat ? current.toFixed(2) : Math.floor(current);
                     requestAnimationFrame(updateCounter);
                 } else {
                     counter.textContent = target;
@@ -417,6 +423,11 @@ class DevOpsPortfolio {
             
             updateCounter();
         };
+
+        if (typeof requestAnimationFrame === 'undefined') {
+            console.warn('requestAnimationFrame not available; skipping metric counters.');
+            return;
+        }
         
         // Animate counters when they come into view
         const counterObserver = new IntersectionObserver((entries) => {
@@ -747,6 +758,9 @@ Available commands:
     setupMarquee() {
         const marquee = document.querySelector('.marquee-content');
         if (marquee && typeof anime !== 'undefined') {
+            // Duplicate content for seamless loop
+            marquee.innerHTML += marquee.innerHTML;
+            
             anime({
                 targets: marquee,
                 translateX: '-50%',
@@ -1022,7 +1036,7 @@ Available commands:
 
         let rotationX = 0;
         let rotationY = 0;
-        let rotationZ = 0;
+        const rotationZ = 0;
         let isRotating = true;
 
         const rotateCube = () => {
@@ -1126,7 +1140,7 @@ async function sendChatMessage() {
     localStorage.setItem('chat_timestamps', JSON.stringify(timestamps));
 
     // Get AI response (async)
-    let response = await getAIResponse(userMessage);
+    const response = await getAIResponse(userMessage);
     
     // Remove loading and add actual response
     loadingDiv.remove();
@@ -1149,6 +1163,19 @@ function sendQuickReply(text) {
 async function getAIResponse(message) {
     const msg = message.toLowerCase();
     
+    // Prefer local proxy if available (keeps API key server-side). Fall back to client-side Google AI if not.
+    try {
+        const proxyResp = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: message }) , signal: (typeof AbortController !== 'undefined' ? new AbortController().signal : undefined)});
+        if (proxyResp && proxyResp.ok) {
+            const pData = await proxyResp.json();
+            // Try to extract text from proxy response (proxy forwards Google API body)
+            const pText = pData?.candidates?.[0]?.content?.parts?.[0]?.text || pData?.output?.[0]?.content?.text || pData?.result?.output?.[0]?.content?.text || (pData?.candidates && pData.candidates[0] && pData.candidates[0].content && pData.candidates[0].content[0] && pData.candidates[0].content[0].text);
+            if (pText) return pText;
+        }
+    } catch (err) {
+        // No proxy or proxy failed; continue to check client key
+    }
+
     // Try to use Google AI API if key is available
     const apiKey = localStorage.getItem('GOOGLE_AI_API_KEY');
     
@@ -1159,7 +1186,7 @@ async function getAIResponse(message) {
             const headers = { 'Content-Type': 'application/json' };
             // If apiKey looks like a bearer token (starts with 'ya29.'), use Authorization header
             if (apiKey.startsWith('ya29.')) {
-                headers['Authorization'] = `Bearer ${apiKey}`;
+                headers.Authorization = `Bearer ${apiKey}`;
             }
 
             const body = JSON.stringify({
@@ -1171,7 +1198,7 @@ async function getAIResponse(message) {
             });
 
             // If no Authorization header, append key as query parameter
-            const fetchUrl = headers['Authorization'] ? url : `${url}?key=${apiKey}`;
+            const fetchUrl = headers.Authorization ? url : `${url}?key=${apiKey}`;
 
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 7000);
@@ -1242,7 +1269,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 function loadEnvironmentVariables() {
-    // Try to load from .env file
+    // Try to load from .env file (skip when fetch is not available, e.g., in some headless runtimes)
+    if (typeof fetch === 'undefined') {
+        console.log('fetch API not available; skipping .env load');
+        return;
+    }
     fetch('./.env')
         .then(res => res.text())
         .then(data => {
@@ -1267,8 +1298,13 @@ function loadEnvironmentVariables() {
     // Performance monitoring
     if ('performance' in window) {
         window.addEventListener('load', () => {
-            const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-            console.log(`Portfolio loaded in ${loadTime}ms`);
+            try {
+                const nav = performance.timing || {};
+                const loadTime = (nav.loadEventEnd || Date.now()) - (nav.navigationStart || Date.now());
+                console.log(`Portfolio loaded in ${loadTime}ms`);
+            } catch (e) {
+                console.warn('Could not compute performance timing', e);
+            }
         });
     }
     

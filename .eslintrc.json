@@ -1,0 +1,29 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "extends": ["standard", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "off",
+    "semi": ["error", "always"],
+    "no-control-regex": "off",
+    "no-unused-vars": ["warn"],
+    "no-return-assign": "off",
+    "no-useless-escape": "off",
+    "promise/param-names": "off"
+  },
+  "globals": {
+    "gsap": "readonly",
+    "ScrollTrigger": "readonly",
+    "anime": "readonly",
+    "Terminal": "readonly",
+    "FitAddon": "readonly"
+  }
+}
+

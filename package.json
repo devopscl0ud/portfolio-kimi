@@ -6,11 +6,12 @@
   "type": "module",
   "scripts": {
     "dev": "http-server -p 3000 -c-1",
+    "serve:proxy": "node server/proxy.js",
     "build": "echo 'Static site - no build required'",
     "build:prod": "echo 'Static site - no build required'",
     "start": "http-server -p 3000",
     "test": "echo 'Tests not configured'",
-    "lint": "eslint . --ext .js,.html",
+    "lint": "eslint . --ext .js",
     "format": "prettier --write ."
   },
   "keywords": [
@@ -26,6 +27,8 @@
   "license": "MIT",
   "devDependencies": {
     "eslint": "^8.54.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.1.0",
     "http-server": "^14.1.1",
     "jsdom": "^22.1.0"

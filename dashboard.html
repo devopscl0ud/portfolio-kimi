@@ -52,17 +52,17 @@
         }
         
         .neon-text {
-            color: #00F5FF;
+            color: #00F5FF !important;
             text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
         }
         
         .matrix-text {
-            color: #39FF14;
+            color: #39FF14 !important;
             text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
         }
         
         .purple-glow {
-            color: #BC13FE;
+            color: #BC13FE !important;
             text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
         }
         
@@ -1082,13 +1082,23 @@ worker-node-2       Ready    worker   238d
         function updateMetrics() {
             // Simulate live data updates
             dashboardData.activeUsers += Math.floor(Math.random() * 200 - 100);
-            dashboardData.responseTime += Math.floor(Math.random() * 20 - 10);
-            dashboardData.errorRate += (Math.random() - 0.5) * 0.01;
+            dashboardData.responseTime = Math.max(20, dashboardData.responseTime + Math.floor(Math.random() * 10 - 5));
+            dashboardData.errorRate = Math.max(0, dashboardData.errorRate + (Math.random() - 0.5) * 0.01);
+            
+            // Variate uptime slightly (very stable but live)
+            if (Math.random() > 0.8) {
+                dashboardData.uptime = Math.min(100, Math.max(99.90, dashboardData.uptime + (Math.random() - 0.5) * 0.01));
+            }
+
+            // Variate cost savings
+            dashboardData.costSavings += Math.floor(Math.random() * 100);
             
             // Update DOM elements with animation
             animateValue('active-users', dashboardData.activeUsers.toLocaleString());
             animateValue('response-time', dashboardData.responseTime + ' ms');
             animateValue('error-rate', dashboardData.errorRate.toFixed(3) + '%');
+            animateValue('uptime-percentage', dashboardData.uptime.toFixed(3));
+            animateValue('cost-savings', '$' + dashboardData.costSavings.toLocaleString());
         }
         
         function animateValue(elementId, newValue) {
@@ -1139,7 +1149,7 @@ worker-node-2       Ready    worker   238d
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.8.0/lib/addon-fit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.9.0/lib/addon-fit.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
