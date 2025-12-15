@@ -232,7 +232,42 @@ class DevOpsPortfolio {
             if (heroBtn) {
                 this.handleHeroBlurb();
             }
+
+            const quantumBtn = e.target.closest && e.target.closest('#quantum-generate-btn');
+            if (quantumBtn) {
+                this.handleQuantumKubeGenerator();
+            }
         });
+    }
+
+    async handleQuantumKubeGenerator() {
+        const promptInput = document.getElementById('quantum-prompt');
+        const outputDiv = document.getElementById('quantum-output');
+        
+        if (!promptInput || !outputDiv) return;
+        
+        const userPrompt = promptInput.value.trim();
+        if (!userPrompt) {
+            outputDiv.innerHTML = '<div class="text-yellow-400 text-center mt-20">Please enter a description of your infrastructure needs.</div>';
+            return;
+        }
+        
+        outputDiv.innerHTML = '<div class="text-cyber-blue text-center mt-20 animate-pulse">Generating manifests...</div>';
+        
+        const systemPrompt = `Act as a Senior DevOps Engineer. Generate valid Kubernetes YAML manifests for the following requirement: "${userPrompt}". 
+        Return ONLY the YAML code, no explanations or markdown backticks. 
+        Ensure best practices: resource limits, liveness probes, and security contexts where appropriate.`;
+        
+        try {
+            const aiResponse = await getAIResponse(systemPrompt);
+            // Clean up response if it contains markdown code blocks
+            let cleanResponse = aiResponse.replace(/```yaml/g, '').replace(/```/g, '').trim();
+            const formatted = escapeHtml(cleanResponse);
+            outputDiv.innerHTML = `<pre class="text-xs text-matrix-green whitespace-pre-wrap font-mono">${formatted}</pre>`;
+        } catch (err) {
+            outputDiv.innerHTML = '<div class="text-red-400 text-center mt-20">Generation failed. Please try again.</div>';
+            console.error(err);
+        }
     }
 
     async handleProjectAISummary(projectId, triggerBtn) {
