@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Incident Room - Bandi Venkatesh | DevOps Simulator</title>
+    <meta name="description" content="Interactive DevOps crisis simulator. Test your skills in a real-time production outage scenario. Can you save the system?">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00F5FF',
+                        'matrix-green': '#39FF14',
+                        'electric-purple': '#BC13FE',
+                        'deep-space': '#0A0A0A',
+                        'aurora-white': '#F8F8FF',
+                        'alert-red': '#FF003C'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glassmorphism {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        
+        .neon-text {
+            color: #00F5FF !important;
+            text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
+        }
+        
+        .matrix-text {
+            color: #39FF14 !important;
+            text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
+        }
+        
+        .purple-glow {
+            color: #BC13FE !important;
+            text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
+        }
+
+        .alert-text {
+            color: #FF003C !important;
+            text-shadow: 0 0 10px #FF003C, 0 0 20px #FF003C;
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .terminal-window {
+            background: #000;
+            border: 2px solid #00F5FF;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .terminal-header {
+            background: rgba(0, 245, 255, 0.1);
+            border-bottom: 1px solid #00F5FF;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            color: #39FF14;
+            font-size: 0.9rem;
+        }
+
+        .terminal-input-area {
+            border-top: 1px solid #333;
+            padding: 12px 16px;
+            background: #0A0A0A;
+            display: flex;
+            align-items: center;
+        }
+
+        .command-btn {
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid #00F5FF;
+            color: #00F5FF;
+            padding: 8px 16px;
+            margin-right: 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .command-btn:hover {
+            background: #00F5FF;
+            color: #000;
+        }
+
+        .command-btn.danger {
+            border-color: #FF003C;
+            color: #FF003C;
+            background: rgba(255, 0, 60, 0.1);
+        }
+
+        .command-btn.danger:hover {
+            background: #FF003C;
+            color: #fff;
+        }
+
+        .status-panel {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid #39FF14;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: #39FF14;
+            transition: width 0.5s ease, background-color 0.5s ease;
+        }
+
+        .log-entry {
+            margin-bottom: 6px;
+            border-left: 2px solid transparent;
+            padding-left: 8px;
+        }
+
+        .log-entry.error {
+            border-left-color: #FF003C;
+            color: #FF6B6B;
+        }
+
+        .log-entry.success {
+            border-left-color: #39FF14;
+            color: #39FF14;
+        }
+
+        .log-entry.info {
+            border-left-color: #00F5FF;
+            color: #00F5FF;
+        }
+    </style>
+</head>
+<body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
+    <!-- Particle Background -->
+    <div class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="./resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin">
+                    <div>
+                        <h1 class="font-orbitron font-bold text-xl neon-text">The Incident Room</h1>
+                        <p class="text-sm text-gray-400">DevOps Crisis Simulator</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-cyber-blue transition-colors duration-300">Exit to Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Game Area -->
+    <section class="pt-32 pb-16 min-h-screen flex items-center">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Sidebar: Status -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="status-panel">
+                        <h3 class="font-orbitron font-bold text-lg matrix-text mb-4">System Status</h3>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>System Health</span>
+                                <span id="health-text">100%</span>
+                            </div>
+                            <div class="health-bar">
+                                <div id="health-bar" class="health-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>User Trust</span>
+                                <span id="trust-text">100%</span>
+                            </div>
+                            <div class="health-bar">
+                                <div id="trust-bar" class="health-fill bg-blue-500" style="width: 100%; background-color: #00F5FF;"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-gray-800">
+                            <div class="text-sm text-gray-400">Active Alerts</div>
+                            <div id="active-alert" class="mt-2 text-alert-red font-bold animate-pulse hidden">
+                                ⚠️ HIGH LATENCY DETECTED
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h4 class="font-semibold text-cyber-blue mb-2">Mission</h4>
+                        <p class="text-sm text-gray-300">
+                            Maintain system health above 0%. Resolve incidents quickly. 
+                            Don't break production!
+                        </p>
+                        <button id="start-btn" class="w-full mt-4 bg-matrix-green text-black font-bold py-2 rounded hover:opacity-90 transition" onclick="startGame()">
+                            START SIMULATION
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Terminal -->
+                <div class="lg:col-span-3">
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <div class="flex space-x-2">
+                                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            </div>
+                            <div class="text-xs text-gray-400">root@production-cluster:~</div>
+                        </div>
+                        <div id="terminal-body" class="terminal-body font-mono">
+                            <div class="log-entry info">[SYSTEM] Initializing Incident Room v1.0...</div>
+                            <div class="log-entry info">[SYSTEM] Connected to Production Cluster (US-East-1)</div>
+                            <div class="log-entry info">[SYSTEM] Waiting for Start command...</div>
+                        </div>
+                        <div class="terminal-input-area" id="controls-area" style="opacity: 0.5; pointer-events: none;">
+                            <div class="flex flex-wrap gap-2">
+                                <button class="command-btn" onclick="executeAction('check-logs')">kubectl logs</button>
+                                <button class="command-btn" onclick="executeAction('check-pods')">kubectl get pods</button>
+                                <button class="command-btn" onclick="executeAction('scale-up')">kubectl scale --replicas=5</button>
+                                <button class="command-btn danger" onclick="executeAction('restart-deployment')">kubectl rollout restart</button>
+                                <button class="command-btn danger" onclick="executeAction('rollback')">kubectl rollout undo</button>
+                                <button class="command-btn" onclick="executeAction('check-metrics')">promql rate(http_requests)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Game State
+        const state = {
+            isRunning: false,
+            health: 100,
+            trust: 100,
+            currentScenario: null,
+            timer: null,
+            tickRate: 1000 // 1 sec per tick
+        };
+
+        const terminalBody = document.getElementById('terminal-body');
+        const healthBar = document.getElementById('health-bar');
+        const trustBar = document.getElementById('trust-bar');
+        const alertBox = document.getElementById('active-alert');
+        const controls = document.getElementById('controls-area');
+
+        // Scenarios
+        const scenarios = [
+            {
+                id: 'latency',
+                alert: 'HIGH LATENCY: API response > 2s',
+                symptoms: ['Log: "Connection timeout"', 'Metric: CPU usage 95%'],
+                correctAction: 'scale-up',
+                damage: 5, // Health per tick
+                fixMessage: 'Scaling up replicas... Traffic distributed. Latency normalizing.'
+            },
+            {
+                id: 'crashloop',
+                alert: 'POD CRASHLOOP: Payment Service',
+                symptoms: ['Log: "NullReferenceException"', 'Pod Status: CrashLoopBackOff'],
+                correctAction: 'rollback',
+                damage: 10,
+                fixMessage: 'Rolling back to previous version... Stability restored.'
+            },
+            {
+                id: 'memory',
+                alert: 'OOM KILLED: Analytics Pod',
+                symptoms: ['Log: "Out of Memory"', 'Pod Status: Evicted'],
+                correctAction: 'restart-deployment', // Simplification
+                damage: 3,
+                fixMessage: 'Restarting deployment to clear memory leak... Monitoring.'
+            }
+        ];
+
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log-entry ${type}`;
+            div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            terminalBody.appendChild(div);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        function startGame() {
+            if (state.isRunning) return;
+            state.isRunning = true;
+            state.health = 100;
+            state.trust = 100;
+            updateUI();
+            
+            document.getElementById('start-btn').innerText = 'SIMULATION RUNNING...';
+            document.getElementById('start-btn').classList.add('bg-gray-600', 'cursor-not-allowed');
+            controls.style.opacity = '1';
+            controls.style.pointerEvents = 'all';
+            
+            log('Starting simulation...', 'success');
+            log('Monitoring systems active.', 'info');
+
+            // Start loop
+            state.timer = setInterval(gameLoop, state.tickRate);
+            
+            // Trigger first scenario soon
+            setTimeout(triggerScenario, 2000);
+        }
+
+        function gameLoop() {
+            if (!state.isRunning) return;
+
+            // Passive regeneration if healthy
+            if (!state.currentScenario && state.health < 100) {
+                state.health = Math.min(100, state.health + 1);
+            }
+
+            // Damage if scenario active
+            if (state.currentScenario) {
+                state.health = Math.max(0, state.health - state.currentScenario.damage);
+                state.trust = Math.max(0, state.trust - (state.currentScenario.damage / 2));
+                
+                // Randomly log symptoms
+                if (Math.random() > 0.7) {
+                    const symptom = state.currentScenario.symptoms[Math.floor(Math.random() * state.currentScenario.symptoms.length)];
+                    log(symptom, 'error');
+                }
+            }
+
+            updateUI();
+
+            // Check Game Over
+            if (state.health <= 0) {
+                endGame(false);
+            }
+        }
+
+        function triggerScenario() {
+            if (!state.isRunning || state.currentScenario) return;
+
+            const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            state.currentScenario = scenario;
+            
+            alertBox.innerText = `⚠️ ${scenario.alert}`;
+            alertBox.classList.remove('hidden');
+            log(`ALERT: ${scenario.alert}`, 'error');
+            
+            // Flash screen effect
+            document.body.style.backgroundColor = '#1a0000';
+            setTimeout(() => document.body.style.backgroundColor = '', 200);
+        }
+
+        function executeAction(action) {
+            if (!state.isRunning) return;
+
+            log(`User executed: ${action}`, 'info');
+
+            // Handling non-fix actions (informational)
+            if (action === 'check-logs' || action === 'check-pods' || action === 'check-metrics') {
+                if (state.currentScenario) {
+                    // Give hint based on scenario
+                    if (action === 'check-logs') log(state.currentScenario.symptoms[0], 'info');
+                    if (action === 'check-pods') log('Pod Status: Unhealthy / High Load', 'info');
+                    if (action === 'check-metrics') log('Metrics: Spiking beyond thresholds', 'info');
+                } else {
+                    log('System normal. Nothing to report.', 'success');
+                }
+                return;
+            }
+
+            // Handling fix actions
+            if (state.currentScenario) {
+                if (action === state.currentScenario.correctAction) {
+                    resolveScenario(true);
+                } else {
+                    log('Action ineffective! Situation critical.', 'error');
+                    state.health -= 10; // Penalty for wrong action
+                    updateUI();
+                }
+            } else {
+                log('Action executed (No active incident).', 'info');
+            }
+        }
+
+        function resolveScenario(success) {
+            if (success) {
+                log(state.currentScenario.fixMessage, 'success');
+                state.currentScenario = null;
+                alertBox.classList.add('hidden');
+                
+                // Schedule next
+                setTimeout(triggerScenario, Math.random() * 5000 + 3000);
+            }
+        }
+
+        function updateUI() {
+            healthBar.style.width = `${state.health}%`;
+            healthBar.style.backgroundColor = state.health > 50 ? '#39FF14' : (state.health > 20 ? '#FFA500' : '#FF003C');
+            document.getElementById('health-text').innerText = `${Math.floor(state.health)}%`;
+            
+            trustBar.style.width = `${state.trust}%`;
+            document.getElementById('trust-text').innerText = `${Math.floor(state.trust)}%`;
+        }
+
+        function endGame(victory) {
+            state.isRunning = false;
+            clearInterval(state.timer);
+            controls.style.opacity = '0.5';
+            controls.style.pointerEvents = 'none';
+            
+            if (victory) {
+                log('SHIFT ENDED. PRODUCTION SURVIVED.', 'success');
+            } else {
+                log('SYSTEM CRITICAL FAILURE. PRODUCTION DOWN.', 'error');
+                log('GAME OVER.', 'error');
+                
+                const restart = document.createElement('button');
+                restart.className = 'w-full mt-4 bg-cyber-blue text-black font-bold py-2 rounded hover:opacity-90 transition';
+                restart.innerText = 'RESTART SYSTEM';
+                restart.onclick = () => location.reload();
+                document.querySelector('.status-panel').appendChild(restart);
+            }
+        }
+    </script>
+</body>
+</html>
