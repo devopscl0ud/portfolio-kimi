@@ -52,60 +52,11 @@ class DevOpsPortfolio {
         safe(this.setupChatbot);
         safe(this.setupXTerminal);
         safe(this.setupAIFeatures);
-        safe(this.installErrorPanel);
         safe(this.setup3DCube);
         
         // Initialize GSAP
-        if (typeof gsap !== 'undefined') {
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
             gsap.registerPlugin(ScrollTrigger);
-        }
-    }
-
-    // Simple on-page error panel to surface JS errors on the homepage for debugging
-    installErrorPanel() {
-        try {
-            if (document.getElementById('error-panel')) return;
-            const panel = document.createElement('div');
-            panel.id = 'error-panel';
-            panel.style.position = 'fixed';
-            panel.style.left = '1rem';
-            panel.style.bottom = '1rem';
-            panel.style.zIndex = 99999;
-            panel.style.maxWidth = 'min(40vw, 420px)';
-            panel.style.maxHeight = '40vh';
-            panel.style.overflow = 'auto';
-            panel.style.background = 'rgba(10,10,10,0.9)';
-            panel.style.color = '#F8F8FF';
-            panel.style.border = '1px solid rgba(255,0,0,0.3)';
-            panel.style.padding = '8px';
-            panel.style.fontSize = '12px';
-            panel.style.fontFamily = 'JetBrains Mono, monospace';
-            panel.innerHTML = '<strong style="color:#FFA500">Client Errors</strong><div id="error-list" style="margin-top:6px"></div><div style="text-align:right;margin-top:6px"><button id="error-clear" style="background:#333;padding:4px 8px;border-radius:4px;border:1px solid #444;color:#fff">Clear</button></div>';
-            document.body.appendChild(panel);
-
-            const list = document.getElementById('error-list');
-            const add = (msg) => {
-                const d = document.createElement('div');
-                d.style.marginBottom = '6px';
-                d.textContent = `${new Date().toLocaleTimeString()} — ${msg}`;
-                list.prepend(d);
-                // keep max 20
-                while (list.children.length > 20) list.removeChild(list.lastChild);
-            };
-
-            window.addEventListener('error', (e) => {
-                add(e.message + ' @ ' + (e.filename || '') + ':' + (e.lineno || '?'));
-                console.error('Captured error:', e);
-            });
-
-            window.addEventListener('unhandledrejection', (e) => {
-                add('Promise rejection: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
-                console.error('Unhandled rejection:', e);
-            });
-
-            document.getElementById('error-clear').addEventListener('click', () => list.innerHTML = '');
-        } catch (e) {
-            console.warn('Failed to install error panel', e);
         }
     }
 
