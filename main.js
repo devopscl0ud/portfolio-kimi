@@ -13,29 +13,48 @@ class DevOpsPortfolio {
         this.xtermTerminal = null;
         this.xtermBuffer = '';
         this.chatbotActive = false;
+        
+        // Virtual File System State
+        this.fileSystem = {
+            '/': { type: 'dir', children: ['home', 'etc', 'var'] },
+            '/home': { type: 'dir', children: ['user'] },
+            '/home/user': { type: 'dir', children: ['projects', 'k8s-manifests', 'README.md'] },
+            '/home/user/projects': { type: 'dir', children: ['quantumkube', 'vividp'] },
+            '/home/user/k8s-manifests': { type: 'dir', children: ['deployment.yaml', 'service.yaml'] },
+            '/home/user/README.md': { type: 'file', content: '# DevOps Portfolio\nWelcome to my interactive terminal!' },
+            '/home/user/k8s-manifests/deployment.yaml': { type: 'file', content: 'apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment' },
+            '/etc': { type: 'dir', children: ['hosts', 'resolv.conf'] }
+        };
+        this.currentDir = '/home/user';
+        
+        // Mock Kubernetes State
+        this.mockPods = [
+            { name: 'nginx-deployment-7c4b7f4b4f-xvz9k', status: 'Running', restarts: 0, age: '2d' },
+            { name: 'postgres-primary-0', status: 'Running', restarts: 0, age: '5d' },
+            { name: 'redis-master-0', status: 'Running', restarts: 0, age: '10d' }
+        ];
+
         this.terminalCommands = {
-            'kubectl get nodes': this.getKubectlNodes,
-            'kubectl get pods': this.getKubectlPods,
-            'terraform plan': this.getTerraformPlan,
-            'terraform apply': this.getTerraformApply,
-            'helm ls': this.getHelmList,
-            'gcloud compute instances list': this.getGcloudInstances,
-            'docker ps': this.getDockerPs,
-            'git status': this.getGitStatus,
-            'curl -s https://api.github.com': this.getApiTest,
-            'ls -la': this.getLsLa,
-            'pwd': this.getPwd,
-            'whoami': this.getWhoami,
-            'date': this.getDate,
+            'help': this.getHelp,
             'clear': this.clearTerminal,
-            'help': this.getHelp
+            'ls': this.cmdLs,
+            'cd': this.cmdCd,
+            'cat': this.cmdCat,
+            'pwd': this.cmdPwd,
+            'mkdir': this.cmdMkdir,
+            'touch': this.cmdTouch,
+            'rm': this.cmdRm,
+            'kubectl': this.cmdKubectl,
+            'whoami': () => 'bandi-venkatesh (DevOps Engineer)',
+            'date': () => new Date().toString(),
+            'echo': (args) => args.join(' ')
         };
         
         this.init();
     }
     
     init() {
-        // Load mock data
+        // Load mock data (legacy support)
         this.loadMockData();
         // Load runtime config (optional config.json)
         this.loadRuntimeConfig();
@@ -60,7 +79,131 @@ class DevOpsPortfolio {
         }
     }
 
-    // AI features: project summaries and bio rewriting
+    // --- Virtual File System Commands ---
+
+    cmdLs = (args) => {
+        const path = this.resolvePath(args[0] || '.');
+        const node = this.fileSystem[path];
+        if (!node) return `ls: cannot access '${args[0]}': No such file or directory`;
+        if (node.type !== 'dir') return args[0];
+        return node.children.map(c => {
+            const childPath = path === '/' ? `/${c}` : `${path}/${c}`;
+            return this.fileSystem[childPath]?.type === 'dir' ? `<span class="text-blue-400">${c}/</span>` : c;
+        }).join('  ');
+    }
+
+    cmdCd = (args) => {
+        if (!args[0]) {
+            this.currentDir = '/home/user';
+            return '';
+        }
+        const path = this.resolvePath(args[0]);
+        if (this.fileSystem[path] && this.fileSystem[path].type === 'dir') {
+            this.currentDir = path;
+            return '';
+        }
+        return `cd: ${args[0]}: No such file or directory`;
+    }
+
+    cmdCat = (args) => {
+        if (!args[0]) return 'cat: missing operand';
+        const path = this.resolvePath(args[0]);
+        const node = this.fileSystem[path];
+        if (!node) return `cat: ${args[0]}: No such file or directory`;
+        if (node.type === 'dir') return `cat: ${args[0]}: Is a directory`;
+        return node.content || '';
+    }
+
+    cmdPwd = () => this.currentDir;
+
+    cmdMkdir = (args) => {
+        if (!args[0]) return 'mkdir: missing operand';
+        const name = args[0];
+        const path = this.currentDir === '/' ? `/${name}` : `${this.currentDir}/${name}`;
+        if (this.fileSystem[path]) return `mkdir: cannot create directory '${name}': File exists`;
+        
+        // Update parent
+        const parentNode = this.fileSystem[this.currentDir];
+        parentNode.children.push(name);
+        
+        this.fileSystem[path] = { type: 'dir', children: [] };
+        return '';
+    }
+
+    cmdTouch = (args) => {
+        if (!args[0]) return 'touch: missing operand';
+        const name = args[0];
+        const path = this.currentDir === '/' ? `/${name}` : `${this.currentDir}/${name}`;
+        if (!this.fileSystem[path]) {
+            const parentNode = this.fileSystem[this.currentDir];
+            parentNode.children.push(name);
+            this.fileSystem[path] = { type: 'file', content: '' };
+        }
+        return '';
+    }
+
+    cmdRm = (args) => {
+        if (!args[0]) return 'rm: missing operand';
+        const name = args[0];
+        const path = this.resolvePath(name);
+        if (!this.fileSystem[path]) return `rm: cannot remove '${name}': No such file or directory`;
+        
+        delete this.fileSystem[path];
+        // Remove from parent children list (simplified, assuming current dir)
+        const parentNode = this.fileSystem[this.currentDir];
+        parentNode.children = parentNode.children.filter(c => c !== name);
+        return '';
+    }
+
+    resolvePath(path) {
+        if (path === '/') return '/';
+        if (path === '.') return this.currentDir;
+        if (path === '..') {
+            const parts = this.currentDir.split('/');
+            parts.pop();
+            return parts.length === 1 && parts[0] === '' ? '/' : parts.join('/') || '/';
+        }
+        if (path.startsWith('/')) return path;
+        return this.currentDir === '/' ? `/${path}` : `${this.currentDir}/${path}`;
+    }
+
+    // --- Kubernetes Simulator ---
+
+    cmdKubectl = (args) => {
+        if (args[0] === 'get' && args[1] === 'pods') {
+            let output = 'NAME                                READY   STATUS    RESTARTS   AGE<br>';
+            this.mockPods.forEach(pod => {
+                output += `${pod.name.padEnd(35)} 1/1     ${pod.status.padEnd(9)} ${pod.restarts.toString().padEnd(10)} ${pod.age}<br>`;
+            });
+            return output;
+        }
+        if (args[0] === 'delete' && args[1] === 'pod') {
+            const podName = args[2];
+            const initialLength = this.mockPods.length;
+            this.mockPods = this.mockPods.filter(p => p.name !== podName);
+            if (this.mockPods.length < initialLength) return `pod "${podName}" deleted`;
+            return `Error from server (NotFound): pods "${podName}" not found`;
+        }
+        if (args[0] === 'scale' && args[1] === 'deployment') {
+            // Simulate scaling by adding pods
+            const count = parseInt(args.find(a => a.startsWith('--replicas='))?.split('=')[1] || '1');
+            const deployment = args[2];
+            // Clear existing for this deployment
+            this.mockPods = this.mockPods.filter(p => !p.name.startsWith(deployment));
+            for(let i=0; i<count; i++) {
+                this.mockPods.push({
+                    name: `${deployment}-${Math.random().toString(36).substring(7)}`,
+                    status: 'Running',
+                    restarts: 0,
+                    age: '1s'
+                });
+            }
+            return `deployment.apps/${deployment} scaled`;
+        }
+        return 'Unknown kubectl command. Try "get pods", "delete pod [name]", "scale deployment [name] --replicas=3"';
+    }
+
+    // --- AI features: project summaries and bio rewriting ---
     setupAIFeatures() {
         // Delegate clicks for project summary buttons
         document.body.addEventListener('click', async (e) => {
@@ -398,7 +541,7 @@ class DevOpsPortfolio {
     // Terminal Functionality
     setupTerminal() {
         this.terminalOutput = document.getElementById('terminalOutput');
-        this.currentPath = '~';
+        this.currentPath = '/home/user';
         this.currentCommand = '';
         // Load persisted terminal history
         this.loadTerminalHistory();
@@ -426,13 +569,20 @@ class DevOpsPortfolio {
         // Show command
         const commandLine = document.createElement('div');
         commandLine.className = 'text-cyber-blue';
-        commandLine.innerHTML = `$ ${command}`;
+        commandLine.innerHTML = `<span class="text-matrix-green">user@devops-portfolio:${this.currentDir}$</span> ${command}`;
         output.appendChild(commandLine);
         
         // Get command result
-        const result = this.terminalCommands[command] ? 
-            this.terminalCommands[command].call(this) : 
-            this.getUnknownCommand(command);
+        let result = '';
+        const args = command.trim().split(/\s+/);
+        const cmdName = args[0];
+        const cmdArgs = args.slice(1);
+        
+        if (this.terminalCommands[cmdName]) {
+            result = this.terminalCommands[cmdName].call(this, cmdArgs);
+        } else {
+            result = this.getUnknownCommand(cmdName);
+        }
         
         const resultLine = document.createElement('div');
         resultLine.className = 'text-gray-300 ml-4';
@@ -442,7 +592,7 @@ class DevOpsPortfolio {
         // Add new prompt
         const prompt = document.createElement('div');
         prompt.className = 'text-green-400';
-        prompt.innerHTML = `$ <span class="terminal-cursor">█</span>`;
+        prompt.innerHTML = `<span class="text-matrix-green">user@devops-portfolio:${this.currentDir}$</span> <span class="terminal-cursor">█</span>`;
         output.appendChild(prompt);
         
         this.terminalOutput.appendChild(output);
@@ -928,7 +1078,15 @@ Available commands:
         if (this.mockData && this.mockData.commands[cmd]) {
             output = this.mockData.commands[cmd].output;
         } else if (this.terminalCommands[cmd]) {
-            output = this.terminalCommands[cmd].call(this);
+            // Need to parse args for our custom commands
+            const args = cmd.split(/\s+/);
+            const cmdName = args[0];
+            const cmdArgs = args.slice(1);
+            if (this.terminalCommands[cmdName]) {
+                output = this.terminalCommands[cmdName].call(this, cmdArgs);
+            } else {
+                output = this.getUnknownCommand(cmd);
+            }
         } else if (this.mockData) {
             // Fuzzy match keys (allow variants like 'helm ls' -> 'helm list')
             const keys = Object.keys(this.mockData.commands);
@@ -1171,31 +1329,49 @@ async function getAIResponse(message) {
 }
 
 function getDefaultResponse(msg) {
+    const page = window.location.pathname;
+    
+    // Context-aware responses
+    if (msg.includes('context') || msg.includes('where am i')) {
+        if (page.includes('projects')) return 'You are browsing the Projects Gallery. I can give you technical deep-dives on QuantumKube AI or the VIVIDP platform.';
+        if (page.includes('experience')) return 'You are exploring Venkatesh\'s professional history. Ask me about the "Tenant Zero" architecture at Uncommon Design.';
+        if (page.includes('incident')) return 'This is the Incident Room. Careful, production is fragile here! Type "help" in the terminal if you get stuck.';
+    }
+
+    // Advanced Technical Knowledge Base
+    if (msg.includes('quantum') || msg.includes('manifest')) {
+        return 'QuantumKube AI is a flagship project that uses LLMs to generate production-ready Kubernetes manifests. It enforces best practices like resource quotas and security contexts automatically.';
+    }
+    if (msg.includes('vividp') || msg.includes('idp')) {
+        return 'VIVIDP is an Internal Developer Platform designed to reduce cognitive load. It offers self-service infrastructure provisioning (click-to-spin-up RDS) and unified observability.';
+    }
+    if (msg.includes('tenant') || msg.includes('multi')) {
+        return 'At Uncommon Design, Venkatesh architected a "Tenant Zero" model using GKE Namespaces, OPA Gatekeeper for policy enforcement, and Cilium for network isolation.';
+    }
+    if (msg.includes('cost') || msg.includes('saving')) {
+        return 'Venkatesh reduced cloud spend by $180K+ annually at WFM Technologies by implementing Spot Instances, Right-sizing recommender automations, and committed use discounts.';
+    }
+
+    // General Categories
     if (msg.includes('kubernetes') || msg.includes('k8s')) {
-        return 'Venkatesh is a Kubernetes expert specializing in GKE, Deployments, StatefulSets, and Security. He has architected multi-tenant environments for fintech and e-commerce clients.';
+        return 'Venkatesh is a Kubernetes expert (4+ years). He specializes in multi-region GKE clusters, GitOps with ArgoCD, and securing workloads with Falco and OPA.';
     }
     if (msg.includes('gcp') || msg.includes('cloud')) {
-        return 'He is a Google Cloud Associate Cloud Engineer with deep expertise in GKE, Compute Engine, Cloud SQL, and Terraform for Infrastructure as Code.';
+        return 'As a GCP Certified Engineer, he has deep experience with GKE, Cloud SQL, and VPC networking. He advocates for "Infrastructure as Code" using Terraform for all resources.';
     }
-    if (msg.includes('project') || msg.includes('experience')) {
-        return 'His key projects include the PrimeRx pharmacy platform at WFM Technologies and multi-tenant infrastructure at Uncommon Design. Check the Experience page for details!';
-    }
-    if (msg.includes('contact') || msg.includes('email')) {
-        return 'Reach out to Venkatesh at bandivenky2222@gmail.com or +91-8555012224. He is currently based in Hyderabad, India.';
-    }
-    if (msg.includes('skill') || msg.includes('stack')) {
-        return 'His core stack includes Kubernetes (GKE), Terraform, Jenkins, GitLab CI/CD, Prometheus, Grafana, and Bash/Python scripting.';
+    if (msg.includes('contact') || msg.includes('email') || msg.includes('hire')) {
+        return 'You should definitely hire him! Reach out at bandivenky2222@gmail.com or +91-8555012224. He is based in Hyderabad but open to remote/hybrid roles.';
     }
     
-    return 'Great question! I\'m an AI assistant here to help you learn about Venkatesh\'s experience. Try asking about his Kubernetes skills, GCP expertise, projects, or how to contact him!';
+    return 'I am Kimi, your DevOps assistant. I can explain Venkatesh\'s architecture decisions, project details, or technical skills. Try asking about "QuantumKube", "Cost Savings", or "Multi-tenancy".';
 }
 
 function escapeHtml(text) {
     const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);

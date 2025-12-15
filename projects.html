@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects - Bandi Venkatesh | Infrastructure Gallery</title>
-    <meta name="description" content="Interactive showcase of 6 enterprise-scale DevOps projects: Pharmacy platform, multi-tenant accelerator, cloud migration toolkit, observability revolution, DevSecOps pipeline, and chaos engineering.">
+    <meta name="description" content="Interactive showcase of enterprise-scale DevOps projects: Pharmacy platform, multi-tenant accelerator, QuantumKube AI, and VIVIDP.">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -315,10 +315,8 @@
         <div class="space-y-2">
             <div class="project-nav-item active" onclick="showProject('project1')">PrimeRx Platform</div>
             <div class="project-nav-item" onclick="showProject('project2')">Multi-Tenant Platform</div>
-            <div class="project-nav-item" onclick="showProject('project3')">Cloud Migration</div>
-            <div class="project-nav-item" onclick="showProject('project4')">Observability Stack</div>
-            <div class="project-nav-item" onclick="showProject('project5')">DevSecOps Pipeline</div>
-            <div class="project-nav-item" onclick="showProject('project6')">Chaos Engineering</div>
+            <div class="project-nav-item" onclick="showProject('project3')">QuantumKube AI</div>
+            <div class="project-nav-item" onclick="showProject('project4')">VIVIDP Platform</div>
         </div>
     </div>
     
@@ -330,8 +328,8 @@
                     <span class="neon-text">Infrastructure</span> <span class="matrix-text">Gallery</span>
                 </h2>
                 <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Interactive showcase of enterprise-scale DevOps projects. Click, explore, and experience 
-                    the infrastructure that powers millions of users.
+                    Interactive showcase of enterprise-scale DevOps projects and personal innovations. 
+                    Explore the systems that power millions of users.
                 </p>
             </div>
         </div>
@@ -349,9 +347,9 @@
                         <h3 class="font-orbitron font-bold text-3xl neon-text">PrimeRx SaaS Platform (WFM)</h3>
                         <p class="text-gray-400">Healthcare SaaS • 2M+ Prescriptions/Month • 99.95% Uptime</p>
                         <div class="mt-3 flex gap-2">
-                        <button aria-label="Generate AI summary for PrimeRx" class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm ai-summary-btn" data-project="project1">AI Summary</button>
-                        <button aria-label="Ask AI about PrimeRx" class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm ai-ask-btn" data-project="project1">Ask AI</button>
-                    </div>
+                            <button aria-label="Generate AI summary for PrimeRx" class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm ai-summary-btn" data-project="project1">AI Summary</button>
+                            <button aria-label="Ask AI about PrimeRx" class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm ai-ask-btn" data-project="project1">Ask AI</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -360,7 +358,6 @@
                     <button class="demo-tab active" onclick="showDemo('project1', 'architecture')">Architecture Viewer</button>
                     <button class="demo-tab" onclick="showDemo('project1', 'metrics')">Live Metrics</button>
                     <button class="demo-tab" onclick="showDemo('project1', 'cost')">Cost Optimization</button>
-                    <button class="demo-tab" onclick="showDemo('project1', 'tech')">Tech Stack</button>
                 </div>
                 
                 <!-- Architecture Viewer -->
@@ -395,23 +392,6 @@
                                         Click on a component to view detailed specifications and configuration.
                                     </div>
                                 </div>
-                                <div class="glassmorphism p-4 rounded-lg">
-                                    <h5 class="font-semibold text-matrix-green mb-2">Performance Metrics</h5>
-                                    <div class="space-y-2 text-sm">
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-400">Latency:</span>
-                                            <span class="text-cyber-blue">< 100ms</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-400">Throughput:</span>
-                                            <span class="text-matrix-green">500 TPS</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-400">Availability:</span>
-                                            <span class="text-electric-purple">99.95%</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -437,12 +417,6 @@
                             <div class="glassmorphism p-6 rounded-lg text-center">
                                 <div class="metric-gauge" id="uptime-gauge"></div>
                                 <p class="text-gray-400 mt-2">Uptime</p>
-                            </div>
-                        </div>
-                        <div class="mt-8">
-                            <div class="glassmorphism p-6 rounded-lg">
-                                <h5 class="font-semibold text-cyber-blue mb-4">Live Traffic Pattern</h5>
-                                <div id="traffic-chart" class="h-64"></div>
                             </div>
                         </div>
                     </div>
@@ -472,51 +446,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="glassmorphism p-6 rounded-lg">
-                                <h5 class="font-semibold text-matrix-green mb-4">Optimization Strategies</h5>
-                                <div class="space-y-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-4 h-4 bg-cyber-blue rounded-full"></div>
-                                        <span class="text-gray-300">Right-sized instances (40% savings)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-4 h-4 bg-matrix-green rounded-full"></div>
-                                        <span class="text-gray-300">Spot instances adoption (30% savings)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-4 h-4 bg-electric-purple rounded-full"></div>
-                                        <span class="text-gray-300">Committed use discounts (20% savings)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-4 h-4 bg-cyber-blue rounded-full"></div>
-                                        <span class="text-gray-300">Automated scaling (10% savings)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tech Stack -->
-                <div id="project1-tech" class="demo-content">
-                    <div class="interactive-demo">
-                        <h4 class="font-orbitron font-bold text-xl matrix-text mb-4">Technology Stack</h4>
-                        <div class="tech-cloud">
-                            <span class="tech-tag">Google Cloud Platform</span>
-                            <span class="tech-tag">GKE</span>
-                            <span class="tech-tag">Istio</span>
-                            <span class="tech-tag">Cloud SQL</span>
-                            <span class="tech-tag">Terraform</span>
-                            <span class="tech-tag">Helm</span>
-                            <span class="tech-tag">Prometheus</span>
-                            <span class="tech-tag">Grafana</span>
-                            <span class="tech-tag">Falco</span>
-                            <span class="tech-tag">OPA</span>
-                            <span class="tech-tag">Vault</span>
-                            <span class="tech-tag">ArgoCD</span>
-                            <span class="tech-tag">GitHub Actions</span>
-                            <span class="tech-tag">Docker</span>
-                            <span class="tech-tag">Kubernetes</span>
                         </div>
                     </div>
                 </div>
@@ -552,23 +481,6 @@
                                     <label class="block text-gray-400 mb-2">Company Name</label>
                                     <input type="text" class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white" placeholder="Acme Financial" id="company-name">
                                 </div>
-                                <div>
-                                    <label class="block text-gray-400 mb-2">Tenant Tier</label>
-                                    <select class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white" id="tenant-tier">
-                                        <option value="basic">Basic</option>
-                                        <option value="professional">Professional</option>
-                                        <option value="enterprise">Enterprise</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-gray-400 mb-2">Region</label>
-                                    <select class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white" id="tenant-region">
-                                        <option value="us-central1">US Central</option>
-                                        <option value="us-east1">US East</option>
-                                        <option value="us-west1">US West</option>
-                                        <option value="europe-west1">Europe West</option>
-                                    </select>
-                                </div>
                                 <button class="w-full bg-matrix-green text-deep-space py-3 rounded font-semibold hover:bg-opacity-80 transition-all" onclick="provisionTenant()">
                                     🚀 Provision Tenant
                                 </button>
@@ -589,14 +501,6 @@
                                     <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">3</div>
                                     <span class="text-gray-400">Deploy application stack</span>
                                 </div>
-                                <div class="flex items-center space-x-3 opacity-50">
-                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">4</div>
-                                    <span class="text-gray-400">Configure monitoring</span>
-                                </div>
-                                <div class="flex items-center space-x-3 opacity-50">
-                                    <div class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">5</div>
-                                    <span class="text-gray-400">Setup network policies</span>
-                                </div>
                             </div>
                             <div id="provisioning-complete" class="mt-6 text-center hidden">
                                 <div class="text-4xl mb-2">✅</div>
@@ -610,90 +514,73 @@
         </div>
     </section>
     
-    <!-- Project 3: Cloud Migration Automation -->
+    <!-- Project 3: QuantumKube AI -->
     <section id="project3" class="project-section py-16">
         <div class="container mx-auto px-6">
             <div class="project-card p-8 rounded-lg scroll-reveal">
                 <div class="flex items-center mb-8">
                     <div class="w-16 h-16 bg-electric-purple rounded-lg flex items-center justify-center mr-6">
-                        <span class="text-2xl">☁️</span>
+                        <span class="text-2xl">🧠</span>
                     </div>
                     <div>
-                        <h3 class="font-orbitron font-bold text-3xl purple-glow">Cloud Migration Automation (Cognizant)</h3>
-                        <p class="text-gray-400">Automated Infrastructure Provisioning • Python/GCP</p>
+                        <h3 class="font-orbitron font-bold text-3xl purple-glow">QuantumKube AI</h3>
+                        <p class="text-gray-400">Personal Project • Kubernetes Manifest Generator • Almost Finished</p>
                         <div class="mt-3 flex gap-2">
-                        <button aria-label="Generate AI summary for Migration Toolkit" class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm ai-summary-btn" data-project="project3">AI Summary</button>
-                        <button aria-label="Ask AI about Migration Toolkit" class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm ai-ask-btn" data-project="project3">Ask AI</button>
+                        <button aria-label="Generate AI summary for QuantumKube" class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm ai-summary-btn" data-project="project3">AI Summary</button>
+                        <button class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm" onclick="alert('Demo coming soon!')">Launch Demo 🚀</button>
                     </div>
                     </div>
                 </div>
                 
                 <div class="interactive-demo">
-                    <h4 class="font-orbitron font-bold text-xl neon-text mb-4">Self-Service Portal Demo</h4>
-                    <div class="grid lg:grid-cols-3 gap-8">
+                    <h4 class="font-orbitron font-bold text-xl neon-text mb-4">AI Manifest Generator</h4>
+                    <div class="grid lg:grid-cols-2 gap-8">
                         <div class="glassmorphism p-6 rounded-lg">
-                            <h5 class="font-semibold text-cyber-blue mb-4">Service Catalog</h5>
-                            <div class="space-y-3">
-                                <div class="bg-gray-800 p-3 rounded cursor-pointer hover:bg-gray-700" onclick="selectService('kubernetes')">
-                                    <div class="flex items-center space-x-3">
-                                        <span class="text-2xl">⚙️</span>
-                                        <div>
-                                            <p class="font-semibold">Kubernetes Cluster</p>
-                                            <p class="text-gray-400 text-sm">GKE with monitoring</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="bg-gray-800 p-3 rounded cursor-pointer hover:bg-gray-700" onclick="selectService('database')">
-                                    <div class="flex items-center space-x-3">
-                                        <span class="text-2xl">🗄️</span>
-                                        <div>
-                                            <p class="font-semibold">Database Instance</p>
-                                            <p class="text-gray-400 text-sm">Cloud SQL with backup</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="bg-gray-800 p-3 rounded cursor-pointer hover:bg-gray-700" onclick="selectService('storage')">
-                                    <div class="flex items-center space-x-3">
-                                        <span class="text-2xl">📦</span>
-                                        <div>
-                                            <p class="font-semibold">Object Storage</p>
-                                            <p class="text-gray-400 text-sm">GCS with lifecycle</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <h5 class="font-semibold text-cyber-blue mb-4">Prompt</h5>
+                            <p class="text-gray-400 mb-4 text-sm">Describe your infrastructure needs in plain English.</p>
+                            <textarea class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white h-48" placeholder="e.g., Create a scalable Nginx deployment with 3 replicas, exposed via LoadBalancer service on port 80."></textarea>
+                            <button class="w-full mt-4 bg-electric-purple text-deep-space py-2 rounded font-semibold hover:bg-opacity-80 transition-all">Generate Manifests</button>
                         </div>
                         <div class="glassmorphism p-6 rounded-lg">
-                            <h5 class="font-semibold text-matrix-green mb-4">Configuration</h5>
-                            <div id="service-config" class="text-gray-400 text-center py-8">
-                                Select a service to configure
+                            <h5 class="font-semibold text-matrix-green mb-4">Generated YAML</h5>
+                            <div class="bg-gray-900 p-4 rounded h-64 overflow-y-auto font-mono text-sm text-gray-300">
+                                <div class="opacity-50 text-center mt-20">Waiting for prompt...</div>
                             </div>
                         </div>
-                        <div class="glassmorphism p-6 rounded-lg">
-                            <h5 class="font-semibold text-purple-glow mb-4">Time Savings Calculator</h5>
-                            <div class="space-y-4">
-                                <div class="text-center">
-                                    <div class="text-3xl font-bold neon-text" id="hours-saved">0</div>
-                                    <p class="text-gray-400 text-sm">Hours Saved Annually</p>
-                                </div>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-400">Manual provisioning:</span>
-                                        <span class="text-gray-300">8 hours</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-400">Automated provisioning:</span>
-                                        <span class="text-cyber-blue">30 minutes</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-400">Time saved per service:</span>
-                                        <span class="text-matrix-green">7.5 hours</span>
-                                    </div>
-                                </div>
-                                <div class="bg-gray-800 p-3 rounded text-center">
-                                    <p class="text-gray-400 text-sm">Based on 50+ services/month</p>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 4: VIVIDP Platform -->
+    <section id="project4" class="project-section py-16">
+        <div class="container mx-auto px-6">
+            <div class="project-card p-8 rounded-lg scroll-reveal">
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-matrix-green rounded-lg flex items-center justify-center mr-6">
+                        <span class="text-2xl">💠</span>
+                    </div>
+                    <div>
+                        <h3 class="font-orbitron font-bold text-3xl matrix-text">VIVIDP Platform</h3>
+                        <p class="text-gray-400">Personal Project • Internal Developer Platform • Under Development</p>
+                        <div class="mt-3 flex gap-2">
+                        <button aria-label="Generate AI summary for VIVIDP" class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm ai-summary-btn" data-project="project4">AI Summary</button>
+                        <button class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm" onclick="alert('Demo coming soon!')">Launch Demo 🚀</button>
+                    </div>
+                    </div>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4 class="font-orbitron font-bold text-xl purple-glow mb-4">IDP Dashboard Preview</h4>
+                    <div class="glassmorphism p-6 rounded-lg text-center h-64 flex flex-col items-center justify-center">
+                        <div class="text-6xl mb-4">🚧</div>
+                        <h5 class="font-semibold text-xl text-gray-300">VIVIDP is currently under active development.</h5>
+                        <p class="text-gray-400 mt-2">A self-service portal for developers to provision infrastructure, view logs, and manage deployments.</p>
+                        <div class="mt-4 flex gap-2">
+                             <span class="bg-gray-800 px-3 py-1 rounded text-xs text-cyber-blue">React</span>
+                             <span class="bg-gray-800 px-3 py-1 rounded text-xs text-matrix-green">Go</span>
+                             <span class="bg-gray-800 px-3 py-1 rounded text-xs text-electric-purple">Kubernetes</span>
                         </div>
                     </div>
                 </div>
@@ -800,73 +687,7 @@
         function selectService(service) {
             const config = document.getElementById('service-config');
             const hoursSaved = document.getElementById('hours-saved');
-            
-            const serviceConfig = {
-                'kubernetes': `
-                    <div class="text-left space-y-3">
-                        <div>
-                            <label class="block text-gray-400 mb-1">Cluster Size</label>
-                            <select class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm">
-                                <option>Small (3 nodes)</option>
-                                <option>Medium (6 nodes)</option>
-                                <option>Large (12 nodes)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Monitoring</label>
-                            <input type="checkbox" checked class="mr-2"> Prometheus + Grafana
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Ingress</label>
-                            <input type="checkbox" checked class="mr-2"> NGINX Ingress Controller
-                        </div>
-                    </div>
-                `,
-                'database': `
-                    <div class="text-left space-y-3">
-                        <div>
-                            <label class="block text-gray-400 mb-1">Database Type</label>
-                            <select class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm">
-                                <option>PostgreSQL</option>
-                                <option>MySQL</option>
-                                <option>SQL Server</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">High Availability</label>
-                            <input type="checkbox" checked class="mr-2"> Multi-zone deployment
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Backup</label>
-                            <input type="checkbox" checked class="mr-2"> Automated daily backups
-                        </div>
-                    </div>
-                `,
-                'storage': `
-                    <div class="text-left space-y-3">
-                        <div>
-                            <label class="block text-gray-400 mb-1">Storage Class</label>
-                            <select class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm">
-                                <option>Standard</option>
-                                <option>Nearline</option>
-                                <option>Coldline</option>
-                                <option>Archive</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Lifecycle</label>
-                            <input type="checkbox" checked class="mr-2"> Automatic lifecycle management
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Encryption</label>
-                            <input type="checkbox" checked class="mr-2"> Server-side encryption
-                        </div>
-                    </div>
-                `
-            };
-            
-            config.innerHTML = serviceConfig[service] || 'Configuration not available';
-            hoursSaved.textContent = '375';
+            // Mock logic
         }
         
         // Initialize metrics demo
