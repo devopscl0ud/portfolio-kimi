@@ -1,0 +1,14 @@
+# ------------------------------------
+# 1. SECRETS & ENVIRONMENT VARIABLES
+# ------------------------------------
+
+# Environment files used for configurations
+.env
+.env.*
+
+# Files for storing credentials or API keys (if used)
+*.key
+*.pem
+*.pfx
+secrets.*
+credentials.*

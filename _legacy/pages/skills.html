@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills & Arsenal - Bandi Venkatesh | Technical Command Center</title>
+    <meta name="description"
+        content="Explore the complete technical arsenal: Kubernetes, GCP, Terraform, and 40+ tools with interactive skill radar, certifications, and learning journey.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00F5FF',
+                        'matrix-green': '#39FF14',
+                        'electric-purple': '#BC13FE',
+                        'deep-space': '#0A0A0A',
+                        'aurora-white': '#F8F8FF'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glassmorphism {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+
+        .neon-text {
+            color: #00F5FF;
+            text-shadow: 0 0 10px #00F5FF, 0 0 20px #00F5FF, 0 0 30px #00F5FF;
+        }
+
+        .matrix-text {
+            color: #39FF14;
+            text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
+        }
+
+        .purple-glow {
+            color: #BC13FE;
+            text-shadow: 0 0 10px #BC13FE, 0 0 20px #BC13FE;
+        }
+
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .skill-radar {
+            width: 100%;
+            height: 500px;
+        }
+
+        .cert-badge {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .cert-badge:hover {
+            transform: rotateY(15deg) rotateX(15deg) scale(1.1);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.4);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .tech-item {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tech-item:hover::before {
+            left: 100%;
+        }
+
+        .tech-item:hover {
+            border-color: #00F5FF;
+            transform: translateY(-5px);
+        }
+
+        .proficiency-bar {
+            height: 4px;
+            border-radius: 2px;
+            transition: width 1s ease-in-out;
+        }
+
+        .learning-timeline {
+            position: relative;
+        }
+
+        .learning-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #00F5FF, #39FF14, #BC13FE);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            background: #00F5FF;
+            border-radius: 50%;
+            border: 3px solid #0A0A0A;
+        }
+    </style>
+</head>
+
+<body class="bg-deep-space text-aurora-white font-inter overflow-x-hidden">
+    <!-- Particle Background -->
+    <div class="particle-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="../resources/logo-bv.png" alt="BV Logo" class="w-12 h-12 animate-spin-slow">
+                    <div>
+                        <h1 class="font-orbitron font-bold text-xl neon-text">Bandi Venkatesh</h1>
+                        <p class="text-sm text-gray-400">Principal DevOps Engineer</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="../index.html" class="hover:text-cyber-blue transition-colors duration-300">Home</a>
+                    <a href="about.html" class="hover:text-cyber-blue transition-colors duration-300">About</a>
+                    <a href="#skills" class="text-cyber-blue">Skills</a>
+                    <a href="experience.html"
+                        class="hover:text-cyber-blue transition-colors duration-300">Experience</a>
+                    <a href="projects.html" class="hover:text-cyber-blue transition-colors duration-300">Projects</a>
+                    <a href="playground.html"
+                        class="hover:text-cyber-blue transition-colors duration-300">Playground</a>
+                    <a href="contact.html" class="hover:text-cyber-blue transition-colors duration-300">Contact</a>
+                </div>
+                <button class="md:hidden text-cyber-blue" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="skills" class="pt-32 pb-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="font-orbitron font-black text-5xl lg:text-6xl mb-6">
+                    <span class="neon-text">Technical</span> <span class="matrix-text">Arsenal</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    A comprehensive command center showcasing expertise across 40+ technologies,
+                    certifications, and continuous learning journey in cloud-native infrastructure.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skill Radar Chart -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center neon-text mb-16 scroll-reveal">Core Competencies
+                Radar</h3>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="scroll-reveal">
+                    <div id="skillRadar" class="skill-radar glassmorphism rounded-lg p-6"></div>
+                </div>
+
+                <div class="space-y-6 scroll-reveal">
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl neon-text mb-4">Kubernetes Orchestration</h4>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-300">Expert Level</span>
+                            <span class="text-cyber-blue font-bold">95%</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-full h-2">
+                            <div class="proficiency-bar bg-gradient-to-r from-cyber-blue to-matrix-green"
+                                style="width: 95%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-2">
+                            50+ clusters, 500+ nodes, advanced networking, security policies, and custom operators
+                        </p>
+                    </div>
+
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl matrix-text mb-4">Google Cloud Platform</h4>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-300">Expert Level</span>
+                            <span class="text-matrix-green font-bold">92%</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-full h-2">
+                            <div class="proficiency-bar bg-gradient-to-r from-matrix-green to-electric-purple"
+                                style="width: 92%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-2">
+                            GKE, Cloud SQL, IAM, VPC, Cloud Functions, multi-region deployments, cost optimization
+                        </p>
+                    </div>
+
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl purple-glow mb-4">Infrastructure as Code</h4>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-300">Expert Level</span>
+                            <span class="text-electric-purple font-bold">98%</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-full h-2">
+                            <div class="proficiency-bar bg-gradient-to-r from-electric-purple to-cyber-blue"
+                                style="width: 98%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-2">
+                            Terraform, CloudFormation, Pulumi, GitOps workflows, module development, state management
+                        </p>
+                    </div>
+
+                    <div class="glassmorphism p-6 rounded-lg">
+                        <h4 class="font-orbitron font-bold text-xl neon-text mb-4">DevSecOps & Security</h4>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-300">Advanced Level</span>
+                            <span class="text-cyber-blue font-bold">88%</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-full h-2">
+                            <div class="proficiency-bar bg-gradient-to-r from-cyber-blue to-matrix-green"
+                                style="width: 88%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-2">
+                            OPA policies, Falco runtime security, vulnerability scanning, compliance automation
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certification Wall -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center matrix-text mb-16 scroll-reveal">Certifications &
+                Credentials</h3>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="cert-badge glassmorphism p-8 rounded-lg text-center scroll-reveal">
+                    <img src="../resources/gcp-ace-badge.png" alt="GCP ACE" class="w-32 h-32 mx-auto mb-6 rounded-full">
+                    <h4 class="font-orbitron font-bold text-xl neon-text mb-2">Google Cloud ACE</h4>
+                    <p class="text-gray-400 mb-4">Associate Cloud Engineer</p>
+                    <div class="text-sm text-gray-500">
+                        <p>Achieved: November 2022</p>
+                        <p>Valid until: November 2025</p>
+                    </div>
+                    <div class="mt-4">
+                        <span class="bg-matrix-green text-deep-space px-3 py-1 rounded text-sm">Verified</span>
+                    </div>
+                </div>
+
+                <div class="cert-badge glassmorphism p-8 rounded-lg text-center scroll-reveal">
+                    <img src="../resources/cka-badge.png" alt="CKA" class="w-32 h-32 mx-auto mb-6 rounded-full">
+                    <h4 class="font-orbitron font-bold text-xl matrix-text mb-2">CKA</h4>
+                    <p class="text-gray-400 mb-4">Certified Kubernetes Administrator</p>
+                    <div class="text-sm text-gray-500">
+                        <p>Status: In Progress</p>
+                        <p>Expected: Q2 2025</p>
+                    </div>
+                    <div class="mt-4">
+                        <span class="bg-cyber-blue text-deep-space px-3 py-1 rounded text-sm">Preparing</span>
+                    </div>
+                </div>
+
+                <div class="cert-badge glassmorphism p-8 rounded-lg text-center scroll-reveal">
+                    <div
+                        class="w-32 h-32 mx-auto mb-6 bg-gray-700 rounded-full flex items-center justify-center text-4xl">
+                        🎯
+                    </div>
+                    <h4 class="font-orbitron font-bold text-xl purple-glow mb-2">CKS</h4>
+                    <p class="text-gray-400 mb-4">Certified Kubernetes Security</p>
+                    <div class="text-sm text-gray-500">
+                        <p>Status: Planned</p>
+                        <p>Target: Q4 2025</p>
+                    </div>
+                    <div class="mt-4">
+                        <span class="bg-electric-purple text-deep-space px-3 py-1 rounded text-sm">Planned</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Matrix -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center purple-glow mb-16 scroll-reveal">Technology Matrix
+            </h3>
+
+            <div class="tech-grid scroll-reveal">
+                <!-- Container & Orchestration -->
+                <div class="tech-item p-6 rounded-lg">
+                    <h4 class="font-orbitron font-bold text-lg neon-text mb-4">Container & Orchestration</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Kubernetes</span>
+                            <span class="text-cyber-blue text-sm">5 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Docker</span>
+                            <span class="text-cyber-blue text-sm">6 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Helm</span>
+                            <span class="text-cyber-blue text-sm">4 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Istio</span>
+                            <span class="text-cyber-blue text-sm">3 years</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cloud Platforms -->
+                <div class="tech-item p-6 rounded-lg">
+                    <h4 class="font-orbitron font-bold text-lg matrix-text mb-4">Cloud Platforms</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Google Cloud</span>
+                            <span class="text-matrix-green text-sm">5 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">AWS</span>
+                            <span class="text-matrix-green text-sm">3 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Azure</span>
+                            <span class="text-matrix-green text-sm">2 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">OCI</span>
+                            <span class="text-matrix-green text-sm">1 year</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Infrastructure as Code -->
+                <div class="tech-item p-6 rounded-lg">
+                    <h4 class="font-orbitron font-bold text-lg purple-glow mb-4">Infrastructure as Code</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Terraform</span>
+                            <span class="text-electric-purple text-sm">5 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">CloudFormation</span>
+                            <span class="text-electric-purple text-sm">3 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Pulumi</span>
+                            <span class="text-electric-purple text-sm">2 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Crossplane</span>
+                            <span class="text-electric-purple text-sm">1 year</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring & Observability -->
+                <div class="tech-item p-6 rounded-lg">
+                    <h4 class="font-orbitron font-bold text-lg neon-text mb-4">Monitoring & Observability</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Prometheus</span>
+                            <span class="text-cyber-blue text-sm">4 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Grafana</span>
+                            <span class="text-cyber-blue text-sm">5 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">ELK Stack</span>
+                            <span class="text-cyber-blue text-sm">3 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Jaeger</span>
+                            <span class="text-cyber-blue text-sm">2 years</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CI/CD & GitOps -->
+                <div class="tech-item p-6 rounded-lg">
+                    <h4 class="font-orbitron font-bold text-lg matrix-text mb-4">CI/CD & GitOps</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">ArgoCD</span>
+                            <span class="text-matrix-green text-sm">3 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Jenkins</span>
+                            <span class="text-matrix-green text-sm">5 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">GitHub Actions</span>
+                            <span class="text-matrix-green text-sm">4 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">GitLab CI</span>
+                            <span class="text-matrix-green text-sm">3 years</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & Compliance -->
+                <div class="tech-item p-6 rounded-lg">
+                    <h4 class="font-orbitron font-bold text-lg purple-glow mb-4">Security & Compliance</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">OPA</span>
+                            <span class="text-electric-purple text-sm">3 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Falco</span>
+                            <span class="text-electric-purple text-sm">2 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Vault</span>
+                            <span class="text-electric-purple text-sm">3 years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-300">Trivy</span>
+                            <span class="text-electric-purple text-sm">2 years</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Timeline -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center neon-text mb-16 scroll-reveal">Continuous Learning
+                Journey</h3>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="learning-timeline scroll-reveal">
+                    <div class="timeline-item">
+                        <h4 class="font-orbitron font-bold text-lg matrix-text mb-2">2024 - Advanced Kubernetes Security
+                        </h4>
+                        <p class="text-gray-300 mb-2">
+                            Deep dive into runtime security, OPA policies, and network policies.
+                            Preparing for CKS certification with hands-on lab environments.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-2 py-1 rounded text-xs">CKS Prep</span>
+                            <span class="bg-matrix-green text-deep-space px-2 py-1 rounded text-xs">OPA</span>
+                            <span class="bg-electric-purple text-deep-space px-2 py-1 rounded text-xs">Falco</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4 class="font-orbitron font-bold text-lg purple-glow mb-2">2023 - Multi-Tenant Architecture
+                        </h4>
+                        <p class="text-gray-300 mb-2">
+                            Built first multi-tenant GKE platform with namespace isolation,
+                            OPA policies, and network segmentation for 15+ concurrent clients.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-2 py-1 rounded text-xs">Multi-tenancy</span>
+                            <span class="bg-matrix-green text-deep-space px-2 py-1 rounded text-xs">OPA</span>
+                            <span class="bg-electric-purple text-deep-space px-2 py-1 rounded text-xs">Network
+                                Policies</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4 class="font-orbitron font-bold text-lg neon-text mb-2">2022 - Google Cloud Mastery</h4>
+                        <p class="text-gray-300 mb-2">
+                            Achieved GCP ACE certification and architected multi-region GKE infrastructure
+                            handling 2M+ prescriptions/month with 99.95% uptime.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-2 py-1 rounded text-xs">GCP ACE</span>
+                            <span class="bg-matrix-green text-deep-space px-2 py-1 rounded text-xs">GKE</span>
+                            <span
+                                class="bg-electric-purple text-deep-space px-2 py-1 rounded text-xs">Multi-region</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4 class="font-orbitron font-bold text-lg matrix-text mb-2">2021 - DevOps Transformation</h4>
+                        <p class="text-gray-300 mb-2">
+                            Career pivot from operations to DevOps. Built 30+ Python automation scripts,
+                            10+ CI/CD pipelines, and achieved 80% deployment time reduction.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-cyber-blue text-deep-space px-2 py-1 rounded text-xs">Python</span>
+                            <span class="bg-matrix-green text-deep-space px-2 py-1 rounded text-xs">Jenkins</span>
+                            <span class="bg-electric-purple text-deep-space px-2 py-1 rounded text-xs">GitOps</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Tech Aspirations -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-orbitron font-bold text-center matrix-text mb-16 scroll-reveal">Future Tech
+                Aspirations</h3>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="glassmorphism p-6 rounded-lg text-center scroll-reveal">
+                    <div class="text-4xl mb-4">🔬</div>
+                    <h4 class="font-orbitron font-bold text-lg neon-text mb-2">eBPF</h4>
+                    <p class="text-gray-400 text-sm">
+                        Kernel-level observability and security for next-generation monitoring
+                    </p>
+                </div>
+
+                <div class="glassmorphism p-6 rounded-lg text-center scroll-reveal">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h4 class="font-orbitron font-bold text-lg matrix-text mb-2">WebAssembly</h4>
+                    <p class="text-gray-400 text-sm">
+                        Portable, secure runtime for edge computing and service mesh extensions
+                    </p>
+                </div>
+
+                <div class="glassmorphism p-6 rounded-lg text-center scroll-reveal">
+                    <div class="text-4xl mb-4">🚀</div>
+                    <h4 class="font-orbitron font-bold text-lg purple-glow mb-2">Crossplane</h4>
+                    <p class="text-gray-400 text-sm">
+                        Kubernetes-native infrastructure composition and unified control plane
+                    </p>
+                </div>
+
+                <div class="glassmorphism p-6 rounded-lg text-center scroll-reveal">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h4 class="font-orbitron font-bold text-lg neon-text mb-2">Argo Rollouts</h4>
+                    <p class="text-gray-400 text-sm">
+                        Advanced progressive delivery with canary and blue-green deployments
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">
+                © 2025 Bandi Venkatesh. Built with DevOps excellence - containerized, monitored, and continuously
+                delivered.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize scroll animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Initialize skill radar chart
+            initSkillRadar();
+
+            // Animate proficiency bars
+            animateProficiencyBars();
+        });
+
+        function initSkillRadar() {
+            const data = [
+                { axis: 'Kubernetes', value: 95 },
+                { axis: 'GCP', value: 92 },
+                { axis: 'Terraform', value: 98 },
+                { axis: 'Security', value: 88 },
+                { axis: 'Monitoring', value: 90 },
+                { axis: 'CI/CD', value: 94 }
+            ];
+
+            const width = 500;
+            const height = 500;
+            const radius = Math.min(width, height) / 2 - 50;
+
+            const svg = d3.select('#skillRadar')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+            // Create scales
+            const angleScale = d3.scaleLinear()
+                .domain([0, data.length])
+                .range([0, 2 * Math.PI]);
+
+            const radiusScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, radius]);
+
+            // Create axes
+            const axes = svg.selectAll('.axis')
+                .data(data)
+                .enter()
+                .append('line')
+                .attr('class', 'axis')
+                .attr('x1', 0)
+                .attr('y1', 0)
+                .attr('x2', (d, i) => radius * Math.cos(angleScale(i) - Math.PI / 2))
+                .attr('y2', (d, i) => radius * Math.sin(angleScale(i) - Math.PI / 2))
+                .attr('stroke', '#00F5FF')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.3);
+
+            // Create axis labels
+            const labels = svg.selectAll('.label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'label')
+                .attr('x', (d, i) => (radius + 20) * Math.cos(angleScale(i) - Math.PI / 2))
+                .attr('y', (d, i) => (radius + 20) * Math.sin(angleScale(i) - Math.PI / 2))
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'middle')
+                .attr('fill', '#F8F8FF')
+                .attr('font-size', '12px')
+                .text(d => d.axis);
+
+            // Create circles for scale
+            const circles = svg.selectAll('.circle')
+                .data([20, 40, 60, 80, 100])
+                .enter()
+                .append('circle')
+                .attr('class', 'circle')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('r', d => radiusScale(d))
+                .attr('fill', 'none')
+                .attr('stroke', '#39FF14')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.2);
+
+            // Create data path
+            const line = d3.lineRadial()
+                .angle((d, i) => angleScale(i))
+                .radius(d => radiusScale(d.value))
+                .curve(d3.curveLinearClosed);
+
+            const path = svg.append('path')
+                .datum(data)
+                .attr('d', line)
+                .attr('fill', 'rgba(0, 245, 255, 0.2)')
+                .attr('stroke', '#00F5FF')
+                .attr('stroke-width', 2);
+
+            // Animate path drawing
+            const totalLength = path.node().getTotalLength();
+            path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+                .attr('stroke-dashoffset', totalLength)
+                .transition()
+                .duration(2000)
+                .attr('stroke-dashoffset', 0);
+        }
+
+        function animateProficiencyBars() {
+            const bars = document.querySelectorAll('.proficiency-bar');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const width = entry.target.style.width;
+                        entry.target.style.width = '0%';
+                        setTimeout(() => {
+                            entry.target.style.width = width;
+                        }, 500);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+
+            bars.forEach(bar => observer.observe(bar));
+        }
+    </script>
+
+    <script src="../main.js"></script>
+</body>
+
+</html>
