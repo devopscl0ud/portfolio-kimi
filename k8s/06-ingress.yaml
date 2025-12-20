@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portfolio-ingress
+  namespace: portfolio
+  annotations:
+    # For GKE with GCE ingress controller
+    kubernetes.io/ingress.class: "gce"
+    # For cert-manager (HTTPS)
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Redirect HTTP to HTTPS
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    # For nginx ingress controller, use:
+    # kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - portfolio.example.com  # Replace with your domain
+    secretName: portfolio-tls
+  rules:
+  - host: portfolio.example.com  # Replace with your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: portfolio-service
+            port:
+              number: 80

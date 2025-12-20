@@ -7,28 +7,16 @@ import Chatbot from './Chatbot'
 
 function Layout({ children }) {
     return (
-        <div className="min-h-screen bg-deep-space text-aurora-white font-inter">
-            {/* Skip to main content link */}
-            <a href="#main" className="skip-link">Skip to main content</a>
-
-            {/* Background */}
+        <div className="min-h-screen text-white relative">
             <AuroraBackground />
-
-            {/* Scroll Progress */}
+            <div className="relative z-10">
+                <Navigation />
+                <main id="main-content" className="pt-20">
+                    {children}
+                </main>
+                <Footer />
+            </div>
             <ScrollProgress />
-
-            {/* Navigation */}
-            <Navigation />
-
-            {/* Main Content */}
-            <main id="main" className="pt-20">
-                {children}
-            </main>
-
-            {/* Footer */}
-            <Footer />
-
-            {/* Floating Elements */}
             <BackToTop />
             <Chatbot />
         </div>

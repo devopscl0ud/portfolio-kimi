@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-config
+  namespace: portfolio
+data:
+  # Environment variables for the application
+  VITE_PORTFOLIO_EMAIL: "bandivenky2222@gmail.com"
+  VITE_PORTFOLIO_GITHUB: "https://github.com/devopscl0ud"
+  VITE_PORTFOLIO_LINKEDIN: "https://linkedin.com/in/bandi-venkatesh"

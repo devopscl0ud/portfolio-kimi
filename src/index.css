@@ -33,6 +33,13 @@ body {
     border: 1px solid rgba(0, 245, 255, 0.2);
 }
 
+.glassmorphism-nav {
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
 /* Neon Text Effects */
 .neon-text {
     color: #00F5FF;

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 
 // Layout
 import Layout from './components/Layout'
+import ErrorBoundary from './components/ErrorBoundary'
+import { ScrollToTop } from './components/ScrollToTop'
 
 // Pages
 import Home from './pages/Home'
@@ -15,6 +17,7 @@ import Playground from './pages/Playground'
 import Contact from './pages/Contact'
 import Dashboard from './pages/Dashboard'
 import ComingSoon from './pages/ComingSoon'
+import NotFound from './pages/NotFound'
 
 // Premium Polish
 import LoadingScreen from './components/polish/LoadingScreen'
@@ -42,21 +45,25 @@ function App() {
         <>
             <CustomCursor />
             <EasterEggs />
-            <Layout>
-                <AnimatePresence mode="wait">
-                    <Routes location={location} key={location.pathname}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/skills" element={<Skills />} />
-                        <Route path="/experience" element={<Experience />} />
-                        <Route path="/projects" element={<Projects />} />
-                        <Route path="/playground" element={<Playground />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/coming-soon/:project" element={<ComingSoon />} />
-                    </Routes>
-                </AnimatePresence>
-            </Layout>
+            <ErrorBoundary>
+                <ScrollToTop />
+                <Layout>
+                    <AnimatePresence mode="wait" initial={false}>
+                        <Routes location={location} key={location.key}>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/skills" element={<Skills />} />
+                            <Route path="/experience" element={<Experience />} />
+                            <Route path="/projects" element={<Projects />} />
+                            <Route path="/playground" element={<Playground />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/coming-soon/:project" element={<ComingSoon />} />
+                            <Route path="*" element={<NotFound />} />
+                        </Routes>
+                    </AnimatePresence>
+                </Layout>
+            </ErrorBoundary>
         </>
     )
 }

@@ -16,13 +16,20 @@ function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     return (
-        <nav className="fixed top-0 w-full z-50 glassmorphism">
+        <motion.nav
+            className="fixed top-0 left-0 right-0 z-[1000] glassmorphism-nav"
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.5 }}
+            role="navigation"
+            aria-label="Main navigation"
+        >
             <div className="container mx-auto px-6 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
                     <NavLink to="/" className="flex items-center space-x-4">
                         <img
-                            src="/resources/logo-bv.png"
+                            src="/resources/logo-bv.png?v=1734681442"
                             alt="BV Logo"
                             className="w-12 h-12 animate-spin-slow"
                         />
@@ -91,7 +98,7 @@ function Navigation() {
                     )}
                 </AnimatePresence>
             </div>
-        </nav>
+        </motion.nav>
     )
 }
 

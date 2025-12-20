@@ -41,7 +41,7 @@ function Home() {
     return (
         <PageTransition>
             {/* Hero Section */}
-            <section id="home" className="min-h-screen flex items-center justify-center relative">
+            <section id="home" className="min-h-screen flex items-center justify-center">
                 <div className="container mx-auto px-6">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Left Column: Text Content */}

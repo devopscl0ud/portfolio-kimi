@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-deployment
+  namespace: portfolio
+  labels:
+    app: portfolio
+    version: v2.0.0
+spec:
+  replicas: 2  # Run 2 pods for high availability
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: portfolio
+  template:
+    metadata:
+      labels:
+        app: portfolio
+        version: v2.0.0
+    spec:
+      containers:
+      - name: portfolio
+        image: YOUR_REGISTRY/portfolio:latest  # Replace with your image
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        # Environment variables from ConfigMap
+        envFrom:
+        - configMapRef:
+            name: portfolio-config
+        # Uncomment to use secrets
+        # - secretRef:
+        #     name: portfolio-secrets
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      # Uncomment if using private registry
+      # imagePullSecrets:
+      # - name: registry-secret

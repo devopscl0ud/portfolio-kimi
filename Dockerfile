@@ -1,63 +1,48 @@
-# Multi-stage build for DevOps Portfolio
+# Multi-stage build for optimized production image
 FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
+# Accept build arguments for environment variables
+ARG VITE_PORTFOLIO_EMAIL
+ARG VITE_PORTFOLIO_GITHUB
+ARG VITE_PORTFOLIO_LINKEDIN
+ARG VITE_AI_API_KEY
+
+# Set environment variables from build args
+ENV VITE_PORTFOLIO_EMAIL=$VITE_PORTFOLIO_EMAIL
+ENV VITE_PORTFOLIO_GITHUB=$VITE_PORTFOLIO_GITHUB
+ENV VITE_PORTFOLIO_LINKEDIN=$VITE_PORTFOLIO_LINKEDIN
+ENV VITE_AI_API_KEY=$VITE_AI_API_KEY
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci && npm cache clean --force
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the app (env vars are baked into the static files here)
 RUN npm run build
 
-# Production stage
+# Production stage with nginx
 FROM nginx:alpine
 
-# Install security updates
-RUN apk update && apk upgrade && apk add --no-cache \
-    curl \
-    && rm -rf /var/cache/apk/*
-
-# Copy built application
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy nginx configuration
+# Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+# Copy built files from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Set proper permissions
-RUN chown -R nextjs:nodejs /usr/share/nginx/html && \
-    chown -R nextjs:nodejs /var/cache/nginx && \
-    chown -R nextjs:nodejs /var/log/nginx && \
-    chown -R nextjs:nodejs /etc/nginx/conf.d
-
-# Switch to non-root user
-USER nextjs
+# Expose port 80
+EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/ || exit 1
-
-# Expose port
-EXPOSE 80
-
-# Security headers and optimizations
-ENV NODE_ENV=production
-ENV PORT=80
-
-# Labels for metadata
-LABEL maintainer="Bandi Venkatesh"
-LABEL version="1.0.0"
-LABEL description="DevOps Portfolio - Production Ready"
+  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
