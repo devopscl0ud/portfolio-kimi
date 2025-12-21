@@ -3,25 +3,26 @@ kind: Gateway
 metadata:
   name: portfolio-gateway
   namespace: portfolio-prod
+  annotations:
+    networking.gke.io/certmap: portfolio-certmap
 spec:
   gatewayClassName: gke-l7-global-external-managed
   listeners:
-  # HTTP listener (redirects to HTTPS)
+  # HTTP listener
   - name: http
     protocol: HTTP
     port: 80
     allowedRoutes:
       namespaces:
         from: All
-  # HTTPS listener for production
-  - name: https-prod
+  # HTTPS listener  
+  - name: https
     protocol: HTTPS
     port: 443
-    hostname: "venkatesh.portfolio.vividp.cloud"
     allowedRoutes:
       namespaces:
         from: All
     tls:
       mode: Terminate
-      certificateRefs:
-      - name: portfolio-prod-cert
+      options:
+        networking.gke.io/pre-shared-certs: portfolio-prod-cert,sonarqube-cert
