@@ -1,0 +1,71 @@
+name: Dev Deployment
+
+on:
+  push:
+    branches: [ develop ]
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/portfolio
+  GCP_PROJECT_ID: vividp-001
+  GKE_CLUSTER: primary-cluster
+  GKE_ZONE: us-central1-a
+
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, gke]
+    environment: development
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Generate short SHA
+      id: vars
+      run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+    
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ env.IMAGE_NAME }}:dev-${{ steps.vars.outputs.SHORT_SHA }}
+          ${{ env.IMAGE_NAME }}:dev-latest
+        cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:dev-latest
+        cache-to: type=inline
+    
+    - name: Update Kustomize image
+      run: |
+        cd k8s-gitops/overlays/dev
+        kustomize edit set image portfolio=${{ env.IMAGE_NAME }}:dev-${{ steps.vars.outputs.SHORT_SHA }}
+    
+    - name: Update preview URL
+      run: |
+        sed -i 's/hostname:.*/hostname: "dev-${{ steps.vars.outputs.SHORT_SHA }}.portfolio.vividp.cloud"/' \
+          k8s-gitops/overlays/dev/httproute.yaml
+    
+    - name: Commit and push changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add k8s-gitops/overlays/dev/
+        git commit -m "Update dev deployment: ${{ steps.vars.outputs.SHORT_SHA }}"
+        git push
+    
+    - name: Deployment Summary
+      run: |
+        echo "### 🚀 Dev Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Image**: \`${{ env.IMAGE_NAME }}:dev-${{ steps.vars.outputs.SHORT_SHA }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **URL**: https://dev-${{ steps.vars.outputs.SHORT_SHA }}.portfolio.vividp.cloud" >> $GITHUB_STEP_SUMMARY
+        echo "- **ArgoCD**: Check sync status in ArgoCD dashboard" >> $GITHUB_STEP_SUMMARY

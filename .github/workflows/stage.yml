@@ -1,0 +1,61 @@
+name: Stage Deployment
+
+on:
+  push:
+    branches: [ staging ]
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/portfolio
+
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, gke]
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Generate short SHA
+      id: vars
+      run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+    
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ env.IMAGE_NAME }}:stage-${{ steps.vars.outputs.SHORT_SHA }}
+          ${{ env.IMAGE_NAME }}:stage-latest
+        cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:stage-latest
+        cache-to: type=inline
+    
+    - name: Update Kustomize
+      run: |
+        cd k8s-gitops/overlays/stage
+        kustomize edit set image portfolio=${{ env.IMAGE_NAME }}:stage-${{ steps.vars.outputs.SHORT_SHA }}
+        sed -i 's/hostname:.*/hostname: "stage-${{ steps.vars.outputs.SHORT_SHA }}.portfolio.vividp.cloud"/' httproute.yaml
+    
+    - name: Commit changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add k8s-gitops/overlays/stage/
+        git commit -m "Update staging: ${{ steps.vars.outputs.SHORT_SHA }}"
+        git push
+    
+    - name: Summary
+      run: |
+        echo "### 🎭 Staging Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "- **URL**: https://stage-${{ steps.vars.outputs.SHORT_SHA }}.portfolio.vividp.cloud" >> $GITHUB_STEP_SUMMARY

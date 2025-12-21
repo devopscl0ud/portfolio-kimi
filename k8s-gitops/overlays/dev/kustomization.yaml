@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: portfolio-dev
+
+resources:
+- ../../base
+- httproute.yaml
+
+commonLabels:
+  env: dev
+  tier: preview
+
+replicas:
+- name: portfolio
+  count: 1  # Single replica for dev
+
+images:
+- name: portfolio
+  newName: docker.io/bandiops/portfolio
+  newTag: dev-latest
+
+configMapGenerator:
+- name: portfolio-config
+  behavior: merge
+  literals:
+  - ENV=development

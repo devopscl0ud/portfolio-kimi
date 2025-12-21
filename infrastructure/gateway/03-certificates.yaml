@@ -1,0 +1,26 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: portfolio-prod-cert
+  namespace: portfolio-prod
+spec:
+  domains:
+  - venkatesh.portfolio.vividp.cloud
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: portfolio-wildcard-cert
+  namespace: portfolio-prod
+spec:
+  domains:
+  - "*.portfolio.vividp.cloud"
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: sonarqube-cert
+  namespace: sonarqube
+spec:
+  domains:
+  - sonarqube.vividp.cloud

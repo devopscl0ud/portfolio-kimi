@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-runner
+  namespace: github-runners
+spec:
+  replicas: 2  # Start with 2 runners
+  selector:
+    matchLabels:
+      app: github-runner
+  template:
+    metadata:
+      labels:
+        app: github-runner
+    spec:
+      serviceAccountName: github-runner-sa
+      containers:
+      - name: runner
+        image: myoung34/github-runner:latest
+        env:
+        - name: ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-runner-secret
+              key: GITHUB_PAT
+        - name: RUNNER_SCOPE
+          value: "repo"
+        - name: REPO_URL
+          value: "https://github.com/devopscl0ud/portfolio-kimi"
+        - name: RUNNER_WORKDIR
+          value: "/tmp/runner/work"
+        - name: RUNNER_GROUP
+          value: "Default"
+        - name: LABELS
+          value: "gke,self-hosted,linux"
+        volumeMounts:
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        - name: work
+          mountPath: /tmp/runner/work
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      - name: dind
+        image: docker:24-dind
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: docker-storage
+          mountPath: /var/lib/docker
+        - name: docker-sock
+          mountPath: /var/run
+      volumes:
+      - name: docker-sock
+        emptyDir: {}
+      - name: docker-storage
+        emptyDir: {}
+      - name: work
+        emptyDir: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: github-runner-sa
+  namespace: github-runners
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: github-runner-role
+  namespace: github-runners
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: github-runner-rolebinding
+  namespace: github-runners
+subjects:
+- kind: ServiceAccount
+  name: github-runner-sa
+roleRef:
+  kind: Role
+  name: github-runner-role
+  apiGroup: rbac.authorization.k8s.io

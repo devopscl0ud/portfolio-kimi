@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: portfolio-stage
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/devopscl0ud/portfolio-kimi.git
+    targetRevision: staging
+    path: k8s-gitops/overlays/stage
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: portfolio-stage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

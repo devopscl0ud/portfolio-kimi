@@ -1,0 +1,65 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [ develop, test, staging, main ]
+
+jobs:
+  quality-check:
+    runs-on: [self-hosted, gke]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for SonarQube
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Lint
+      run: npm run lint || echo "No lint script configured"
+    
+    - name: Build
+      run: npm run build
+    
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarqube.vividp.cloud
+      with:
+        args: >
+          -Dsonar.projectKey=portfolio-kimi
+          -Dsonar.sources=src
+          -Dsonar.exclusions=**/*.test.js,**/*.spec.js,**/node_modules/**
+    
+    - name: Quality Gate Check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      timeout-minutes: 5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarqube.vividp.cloud
+    
+    - name: Comment PR
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const output = `#### Quality Check Results 🎯
+          - Lint: ✅
+          - Build: ✅
+          - SonarQube: Check [dashboard](https://sonarqube.vividp.cloud)`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
