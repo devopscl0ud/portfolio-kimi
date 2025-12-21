@@ -9,7 +9,7 @@ spec:
   resources:
     requests:
       storage: 20Gi
-  storageClassName: standard-rwo
+  storageClassName: standard
 ---
 apiVersion: apps/v1
 kind: StatefulSet
